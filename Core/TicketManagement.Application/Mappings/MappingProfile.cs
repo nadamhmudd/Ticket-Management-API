@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using TicketManagement.Application.Features.Categories.Queries;
 using TicketManagement.Application.Features.Events.Queries;
 
 namespace TicketManagement.Application.Mappings
@@ -11,6 +12,8 @@ namespace TicketManagement.Application.Mappings
             CreateMap<Event, EventDetailResponse>().ReverseMap();
 
             CreateMap<Category, CategoryDto>().ReverseMap();
+            CreateMap<Category, CategoryListResponse>().ReverseMap();
+            CreateMap<Category, CategoryEventListResponse>().ReverseMap();
         }
     }
 }

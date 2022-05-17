@@ -3,7 +3,7 @@ using TicketManagement.Application.Interfaces.Repositories;
 
 namespace TicketManagement.Application.Features.Events.Queries
 {
-    public class EventQuerytHandler :
+    public class EventQueryHandler :
                             IRequestHandler<GetEventsListQuery, List<EventsListResponse>>,
                             IRequestHandler<GetEventDetailQuery, EventDetailResponse>
     {
@@ -13,7 +13,7 @@ namespace TicketManagement.Application.Features.Events.Queries
         #endregion
 
         #region Constructor(s)
-        public EventQuerytHandler(IEventRepository eventRepo, IMapper mapper)
+        public EventQueryHandler(IEventRepository eventRepo, IMapper mapper)
         {
             _eventRepo = eventRepo;
             _mapper = mapper;
