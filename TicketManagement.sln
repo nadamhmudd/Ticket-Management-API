@@ -1,0 +1,36 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.1.32414.318
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "API", "API", "{639F7C3E-2CD8-4C92-B67D-1121901BA8E1}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Core", "Core", "{2B667ADF-6FAC-4D96-9AA1-83DBC4183716}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Infrastructure", "Infrastructure", "{9ED621CB-1DFB-4607-9040-6E901D40DFB8}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "UI", "UI", "{3178FBAD-0CB0-428B-9647-261F1BE03474}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TicketManagement.Domain", "TicketManagement.Domain\TicketManagement.Domain.csproj", "{412E82F3-E58E-4F09-969E-5E35C0094475}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{412E82F3-E58E-4F09-969E-5E35C0094475}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{412E82F3-E58E-4F09-969E-5E35C0094475}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{412E82F3-E58E-4F09-969E-5E35C0094475}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{412E82F3-E58E-4F09-969E-5E35C0094475}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{412E82F3-E58E-4F09-969E-5E35C0094475} = {2B667ADF-6FAC-4D96-9AA1-83DBC4183716}
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {69DA187C-60E9-4E7E-8407-CF0518749F0A}
+	EndGlobalSection
+EndGlobal
