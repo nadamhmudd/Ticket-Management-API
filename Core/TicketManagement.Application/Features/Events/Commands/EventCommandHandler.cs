@@ -21,6 +21,12 @@
         #region Create new Event
         public async Task<Guid> Handle(CreateEventCommand request, CancellationToken cancellationToken)
         {
+            var validator = new CreateEventCommandValidator(_eventRepo);
+            var validationResult = await validator.ValidateAsync(request);
+
+            if (validationResult.Errors.Any())
+                throw new Exceptions.ValidationException(validationResult);
+
             var @event = _mapper.Map<Event>(request);
            
             @event = await _eventRepo.AddAsync(@event);
@@ -34,6 +40,17 @@
         {
             var eventToUpdate = await _eventRepo.GetByIdAsync(request.Id);
 
+            #region Validation
+            if (eventToUpdate is null)
+                throw new Exceptions.NotFoundException(nameof(Event), request.Id);
+
+            var validator = new UpdateEventCommandValidator();
+            var validationResult = await validator.ValidateAsync(request);
+
+            if (validationResult.Errors.Any())
+                throw new Exceptions.ValidationException(validationResult); 
+            #endregion
+
             _mapper.Map(request, eventToUpdate, typeof(UpdateEventCommand), typeof(Event));
             
             await _eventRepo.UpdateAsync(eventToUpdate);
@@ -46,6 +63,9 @@
         public async Task<Unit> Handle(DeleteEventCommand request, CancellationToken cancellationToken)
         {
             var eventToDelete = await _eventRepo.GetByIdAsync(request.Id);
+
+            if (eventToDelete is null)
+                throw new Exceptions.NotFoundException(nameof(Event), request.Id);
 
             await _eventRepo.DeleteAsync(eventToDelete);
 

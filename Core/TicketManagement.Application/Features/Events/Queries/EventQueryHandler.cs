@@ -34,8 +34,8 @@ namespace TicketManagement.Application.Features.Events.Queries
         {
             var eventFronDb = await _eventRepo.GetByIdAsync(id: request.Id, include: e => e.Category);
 
-            //if (eventFronDb.Category is null)
-            //    throw ArgumentNullException;
+            if (eventFronDb is null || eventFronDb.Category is null)
+                throw new Exceptions.NotFoundException(nameof(Event), request.Id);
 
             var categoryDto = _mapper.Map<CategoryDto>(eventFronDb.Category);
 
