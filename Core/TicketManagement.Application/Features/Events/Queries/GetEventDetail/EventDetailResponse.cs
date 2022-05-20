@@ -13,4 +13,3 @@
         public CategoryDto Category { get; set; }
     }
 }
-}
