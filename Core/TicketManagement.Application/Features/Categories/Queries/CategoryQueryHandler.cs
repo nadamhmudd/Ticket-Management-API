@@ -37,6 +37,5 @@ namespace TicketManagement.Application.Features.Categories.Queries
             return _mapper.Map<List<CategoryEventListResponse>>(list);
         } 
         #endregion
-
     }
 }
