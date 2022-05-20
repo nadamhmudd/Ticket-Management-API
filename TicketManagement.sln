@@ -17,6 +17,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TicketManagement.Applicatio
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TicketManagement.DataPersistence", "Infrastructure\TicketManagement.DataPersistence\TicketManagement.DataPersistence.csproj", "{55498C83-C343-41E8-A92D-804164C46CF1}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TicketManagement.Infrastructure", "Infrastructure\TicketManagement.Infrastructure\TicketManagement.Infrastructure.csproj", "{5879E24F-65DB-4C2F-9D6C-92935609BE06}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -35,6 +37,10 @@ Global
 		{55498C83-C343-41E8-A92D-804164C46CF1}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{55498C83-C343-41E8-A92D-804164C46CF1}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{55498C83-C343-41E8-A92D-804164C46CF1}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5879E24F-65DB-4C2F-9D6C-92935609BE06}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5879E24F-65DB-4C2F-9D6C-92935609BE06}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5879E24F-65DB-4C2F-9D6C-92935609BE06}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5879E24F-65DB-4C2F-9D6C-92935609BE06}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -43,6 +49,7 @@ Global
 		{412E82F3-E58E-4F09-969E-5E35C0094475} = {2B667ADF-6FAC-4D96-9AA1-83DBC4183716}
 		{EC8608CE-14BA-427C-B9A3-48352ABE64E5} = {2B667ADF-6FAC-4D96-9AA1-83DBC4183716}
 		{55498C83-C343-41E8-A92D-804164C46CF1} = {9ED621CB-1DFB-4607-9040-6E901D40DFB8}
+		{5879E24F-65DB-4C2F-9D6C-92935609BE06} = {9ED621CB-1DFB-4607-9040-6E901D40DFB8}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {69DA187C-60E9-4E7E-8407-CF0518749F0A}
