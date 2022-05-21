@@ -1,6 +1,8 @@
-﻿using TicketManagement.Application.Features.Categories.Queries;
+﻿using TicketManagement.Application.Features.Categories;
+using TicketManagement.Application.Features.Categories.Commands;
+using TicketManagement.Application.Features.Categories.Queries;
+using TicketManagement.Application.Features.Events;
 using TicketManagement.Application.Features.Events.Commands;
-using TicketManagement.Application.Features.Events.Queries;
 
 namespace TicketManagement.Application.Mappings
 {
@@ -8,15 +10,14 @@ namespace TicketManagement.Application.Mappings
     {
         public MappingProfile()
         {
-            CreateMap<Event, EventsListResponse>().ReverseMap();
-            CreateMap<Event, EventDetailResponse>().ReverseMap();
+            CreateMap<Category, CategoryDto>().ReverseMap();
+            CreateMap<Category, CategoryEventsDto>().ReverseMap();
+            CreateMap<Category, CreateCategoryCommand>().ReverseMap();
+
+            CreateMap<Event, EventDto>().ReverseMap();
             CreateMap<Event, CreateEventCommand>().ReverseMap();
             CreateMap<Event, UpdateEventCommand>().ReverseMap();
 
-            CreateMap<Category, CategoryDto>().ReverseMap();
-            CreateMap<Category, Features.Categories.Commands.CategoryDto>().ReverseMap();
-            CreateMap<Category, CategoryListVM>().ReverseMap();
-            CreateMap<Category, CategoryEventListVM>().ReverseMap();
         }
     }
 }

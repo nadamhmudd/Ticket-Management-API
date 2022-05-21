@@ -1,11 +1,12 @@
 ﻿global using AutoMapper;
 global using TicketManagement.Application.Interfaces.Repositories;
+using TicketManagement.Application.Features.Categories;
 
 namespace TicketManagement.Application.Features.Events.Queries
 {
     public class EventQueryHandler :
-                            IRequestHandler<GetEventsListQuery, List<EventsListResponse>>,
-                            IRequestHandler<GetEventDetailQuery, EventDetailResponse>
+                            IRequestHandler<GetEventsListQuery, List<EventDto>>,
+                            IRequestHandler<GetEventDetailQuery, EventDto>
     {
         #region Vars / Props
         private readonly IEventRepository _eventRepo;
@@ -21,16 +22,16 @@ namespace TicketManagement.Application.Features.Events.Queries
         #endregion
 
         #region Get Events List Query
-        public async Task<List<EventsListResponse>> Handle(GetEventsListQuery request, CancellationToken cancellationToken)
+        public async Task<List<EventDto>> Handle(GetEventsListQuery request, CancellationToken cancellationToken)
         {
             var eventsList = (await _eventRepo.ListAllAsync()).OrderBy(e => e.Date);
 
-            return _mapper.Map<List<EventsListResponse>>(eventsList);
+            return _mapper.Map<List<EventDto>>(eventsList);
         }
         #endregion
 
         #region  Get Event Detail Query
-        public async Task<EventDetailResponse> Handle(GetEventDetailQuery request, CancellationToken cancellationToken)
+        public async Task<EventDto> Handle(GetEventDetailQuery request, CancellationToken cancellationToken)
         {
             var eventFronDb = await _eventRepo.GetByIdAsync(id: request.Id, include: e => e.Category);
 
@@ -39,7 +40,7 @@ namespace TicketManagement.Application.Features.Events.Queries
 
             var categoryDto = _mapper.Map<CategoryDto>(eventFronDb.Category);
 
-            var eventDatailDto = _mapper.Map<EventDetailResponse>(eventFronDb);
+            var eventDatailDto = _mapper.Map<EventDto>(eventFronDb);
             eventDatailDto.Category = categoryDto;
 
             return eventDatailDto;

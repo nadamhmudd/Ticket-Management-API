@@ -1,4 +1,4 @@
-﻿namespace TicketManagement.Application.Features.Events.Queries
+﻿namespace TicketManagement.Application.Features.Categories
 {
     public record CategoryDto
     {

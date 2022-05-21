@@ -1,6 +1,8 @@
-﻿namespace TicketManagement.Application.Features.Events.Queries
+﻿using TicketManagement.Application.Features.Categories;
+
+namespace TicketManagement.Application.Features.Events
 {
-    public record EventDetailResponse
+    public record EventDto
     {
         public Guid Id { get; set; }
         public string Name { get; set; }

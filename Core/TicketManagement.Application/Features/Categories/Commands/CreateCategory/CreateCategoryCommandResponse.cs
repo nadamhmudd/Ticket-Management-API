@@ -1,8 +1,6 @@
-﻿global using TicketManagement.Application.Responses;
-
-namespace TicketManagement.Application.Features.Categories.Commands
+﻿namespace TicketManagement.Application.Features.Categories.Commands
 {
-    public class CreateCategoryCommandResponse: BaseResponse
+    public class CreateCategoryCommandResponse: Comman.BaseResponse
     {
         public CreateCategoryCommandResponse(): base()
         {

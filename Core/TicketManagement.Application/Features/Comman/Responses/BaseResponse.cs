@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace TicketManagement.Application.Responses
+namespace TicketManagement.Application.Features.Comman
 {
     public class BaseResponse
     {

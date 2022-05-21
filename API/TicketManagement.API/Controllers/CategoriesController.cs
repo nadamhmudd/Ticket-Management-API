@@ -2,6 +2,7 @@
 global using MediatR;
 using TicketManagement.Application.Features.Categories.Queries;
 using TicketManagement.Application.Features.Categories.Commands;
+using TicketManagement.Application.Features.Categories;
 
 namespace TicketManagement.API.Controllers
 {
@@ -24,7 +25,7 @@ namespace TicketManagement.API.Controllers
 
         [HttpGet("all")]
         [ProducesResponseType(StatusCodes.Status200OK)]
-        public async Task<ActionResult<List<CategoryListVM>>> GetAll()
+        public async Task<ActionResult<List<CategoryDto>>> GetAll()
         {
             return Ok(await _mediator.Send(new GetCategoriesListQuery()));
         }
@@ -33,7 +34,7 @@ namespace TicketManagement.API.Controllers
         [HttpGet("allwithevents")]
         [ProducesDefaultResponseType]
         [ProducesResponseType(StatusCodes.Status200OK)]
-        public async Task<ActionResult<List<CategoryEventListVM>>> GetCategoriesWithEvents(bool includeHistory)
+        public async Task<ActionResult<List<CategoryEventsDto>>> GetCategoriesWithEvents(bool includeHistory)
         {
             return Ok(await _mediator.Send(new GetCategoriesListWithEventsQuery(includeHistory)));
         }
