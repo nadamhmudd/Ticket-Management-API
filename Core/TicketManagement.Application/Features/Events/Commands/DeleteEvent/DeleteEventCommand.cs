@@ -2,6 +2,11 @@
 {
     public class DeleteEventCommand : IRequest
     {
-        public Guid Id { get; set; }
+        public readonly Guid Id;
+
+        public DeleteEventCommand(Guid id)
+        {
+            Id = id;
+        }
     }
 }
