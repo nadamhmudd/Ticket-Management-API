@@ -4,8 +4,8 @@ using TicketManagement.Application.Interfaces.Repositories;
 namespace TicketManagement.Application.Features.Categories.Queries
 {
     public class CategoryQueryHandler :
-                                IRequestHandler<GetCategoriesListQuery, List<CategoryListResponse>>,
-                                IRequestHandler<GetCategoriesListWithEventsQuery, List<CategoryEventListResponse>>
+                                IRequestHandler<GetCategoriesListQuery, List<CategoryListVM>>,
+                                IRequestHandler<GetCategoriesListWithEventsQuery, List<CategoryEventListVM>>
     {
         #region Vars / Props
         private readonly ICategoryRepository _categoryRepository;
@@ -21,20 +21,20 @@ namespace TicketManagement.Application.Features.Categories.Queries
         #endregion
 
         #region Get Categories List
-        public async Task<List<CategoryListResponse>> Handle(GetCategoriesListQuery request, CancellationToken cancellationToken)
+        public async Task<List<CategoryListVM>> Handle(GetCategoriesListQuery request, CancellationToken cancellationToken)
         {
             var CategoriesList = (await _categoryRepository.ListAllAsync()).OrderBy(x => x.Name);
             
-            return _mapper.Map<List<CategoryListResponse>>(CategoriesList);
+            return _mapper.Map<List<CategoryListVM>>(CategoriesList);
         }
         #endregion
 
         #region Get Categories List With Events
-        public async Task<List<CategoryEventListResponse>> Handle(GetCategoriesListWithEventsQuery request, CancellationToken cancellationToken)
+        public async Task<List<CategoryEventListVM>> Handle(GetCategoriesListWithEventsQuery request, CancellationToken cancellationToken)
         {
             var list = await _categoryRepository.GetCategoriesWithEvents(request.IncludeHistory);
 
-            return _mapper.Map<List<CategoryEventListResponse>>(list);
+            return _mapper.Map<List<CategoryEventListVM>>(list);
         } 
         #endregion
     }

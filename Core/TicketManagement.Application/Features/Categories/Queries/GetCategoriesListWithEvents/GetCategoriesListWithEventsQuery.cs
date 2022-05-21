@@ -1,7 +1,12 @@
 ﻿namespace TicketManagement.Application.Features.Categories.Queries
 {
-    public class GetCategoriesListWithEventsQuery: IRequest<List<CategoryEventListResponse>>
+    public class GetCategoriesListWithEventsQuery: IRequest<List<CategoryEventListVM>>
     {
-        public bool IncludeHistory { get; set; }
+        public readonly bool IncludeHistory;
+
+        public GetCategoriesListWithEventsQuery(bool includeHistory)
+        {
+            IncludeHistory = includeHistory;
+        }
     }
 }

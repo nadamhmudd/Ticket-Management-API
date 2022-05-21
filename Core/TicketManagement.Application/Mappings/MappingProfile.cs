@@ -15,8 +15,8 @@ namespace TicketManagement.Application.Mappings
 
             CreateMap<Category, CategoryDto>().ReverseMap();
             CreateMap<Category, Features.Categories.Commands.CategoryDto>().ReverseMap();
-            CreateMap<Category, CategoryListResponse>().ReverseMap();
-            CreateMap<Category, CategoryEventListResponse>().ReverseMap();
+            CreateMap<Category, CategoryListVM>().ReverseMap();
+            CreateMap<Category, CategoryEventListVM>().ReverseMap();
         }
     }
 }
