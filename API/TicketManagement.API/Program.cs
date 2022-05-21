@@ -9,8 +9,8 @@ var builder = WebApplication.CreateBuilder(args);
 #region ConfigureServices : Add services to the container.
 
 #region  Add Application, DataPersistence and Infrastructure Libraries
-builder.Services.AddApplicationServices();
 builder.Services.AddDataPersistenceServices(builder.Configuration);
+builder.Services.AddApplicationServices();
 builder.Services.AddInfrastructureServices(builder.Configuration);
 #endregion
 
@@ -19,9 +19,10 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 
 #region  Enable CORS  (Cross Origin Resource Sharing)
+const string  _policyName = "CorsPolicy";
 builder.Services.AddCors(options =>
 {
-    options.AddPolicy(name: "CorsPolicy", builder =>
+    options.AddPolicy(name: _policyName, builder =>
     {
         builder.AllowAnyOrigin()
             .AllowAnyHeader()
@@ -46,6 +47,8 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
+
+app.UseCors(_policyName); //add core before authorization
 
 app.UseAuthorization();
 
