@@ -2,6 +2,7 @@
 global using TicketManagement.Application;
 global using TicketManagement.DataPersistence;
 global using TicketManagement.Infrastructure;
+using Microsoft.OpenApi.Models;
 #endregion
 
 var builder = WebApplication.CreateBuilder(args);
@@ -31,8 +32,20 @@ builder.Services.AddCors(options =>
 });
 #endregion
 
-// Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
-//builder.Services.AddSwaggerGen(); 
+#region configuring Swagger/OpenAPI
+builder.Services.AddSwaggerGen(c =>
+{
+c.SwaggerDoc("v1", new OpenApiInfo
+{
+Version = "v1",
+Title = "Ticket Management API",
+
+});
+
+    //support csv files
+    //c.OperationFilter<FileResultContentTypeOperationFilter>();
+}); 
+#endregion
 
 #endregion
 
@@ -41,9 +54,12 @@ var app = builder.Build();
 #region Configure: Configure the HTTP request pipeline (Middleware pipline)
 if (app.Environment.IsDevelopment())
 {
-    app.UseDeveloperExceptionPage();
-    //app.UseSwagger();
-    //app.UseSwaggerUI();
+    //app.UseDeveloperExceptionPage();
+    app.UseSwagger();
+    app.UseSwaggerUI(c =>
+    {
+        c.SwaggerEndpoint("/swagger/v1/swagger.json", "Ticket Management API");
+    });
 }
 
 app.UseHttpsRedirection();
