@@ -1,4 +1,4 @@
-﻿using TicketManagement.Application.Features.Events;
+﻿using TicketManagement.Api.Utility;
 using TicketManagement.Application.Features.Events.Commands;
 using TicketManagement.Application.Features.Events.Queries;
 
@@ -36,6 +36,14 @@ namespace TicketManagement.API.Controllers
             return Ok(await _mediator.Send(new GetEventDetailQuery(id)));
         }
 
+        [HttpGet("export")]
+        [FileResultContentType("text/csv")]
+        public async Task<FileResult> ExportEvents()
+        {
+            var fileDto = await _mediator.Send(new GetEventsExportQuery());
+
+            return File(fileDto.Data.Data, fileDto.Data.ContentType, fileDto.Data.ExportFileName);
+        }
 
         #endregion
 

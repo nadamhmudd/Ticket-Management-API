@@ -1,23 +1,26 @@
 ﻿global using AutoMapper;
 global using TicketManagement.Application.Interfaces.Repositories;
-using TicketManagement.Application.Features.Categories;
+using TicketManagement.Application.Contracts.Infrastructure;
 
 namespace TicketManagement.Application.Features.Events.Queries
 {
     public class EventQueryHandler :
                             IRequestHandler<GetEventsListQuery, Response<List<EventDto>>>,
-                            IRequestHandler<GetEventDetailQuery, Response<EventDto>>
+                            IRequestHandler<GetEventDetailQuery, Response<EventDto>>,
+                            IRequestHandler<GetEventsExportQuery, Response<CsvFile>>
     {
         #region Vars / Props
         private readonly IEventRepository _eventRepo;
-        private readonly IMapper _mapper; 
+        private readonly IMapper _mapper;
+        private readonly ICsvExporter _csvExporter;
         #endregion
 
         #region Constructor(s)
-        public EventQueryHandler(IEventRepository eventRepo, IMapper mapper)
+        public EventQueryHandler(IEventRepository eventRepo, IMapper mapper, ICsvExporter csvExporter)
         {
             _eventRepo = eventRepo;
             _mapper = mapper;
+            _csvExporter = csvExporter;
         } 
         #endregion
 
@@ -45,7 +48,23 @@ namespace TicketManagement.Application.Features.Events.Queries
             eventDatailDto.Category = categoryDto;
 
             return new Response<EventDto>(eventDatailDto);
-        } 
+        }
+        #endregion
+
+        #region Get Events Export Query
+        public async Task<Response<CsvFile>> Handle(GetEventsExportQuery request, CancellationToken cancellationToken)
+        {
+            var eventsList = _mapper.Map<List<EventExportDto>>((await _eventRepo.ListAllAsync()).OrderBy(e => e.Date));
+
+            var csvFile = _csvExporter.ExportEventsToCsv(eventsList);
+
+            return new Response<CsvFile>(
+                    new CsvFile(exportFileName: $"{Guid.NewGuid()}.csv", contentType:
+                    "text/csv",
+                    data: csvFile
+            ));
+
+        }
         #endregion
 
     }
