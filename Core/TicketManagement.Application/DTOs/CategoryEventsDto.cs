@@ -1,6 +1,4 @@
-﻿using TicketManagement.Application.Features.Events;
-
-namespace TicketManagement.Application.Features.Categories.Queries
+﻿namespace TicketManagement.Application.DTOs
 { 
     public class CategoryEventsDto
     {

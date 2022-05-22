@@ -1,6 +1,4 @@
-﻿using TicketManagement.Application.Features.Categories;
-
-namespace TicketManagement.Application.Features.Events
+﻿namespace TicketManagement.Application.DTOs
 {
     public record EventDto
     {

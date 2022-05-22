@@ -1,7 +1,7 @@
 ﻿namespace TicketManagement.Application.Features.Categories.Commands
 {
     public class CategoryCommandHandler :
-                          IRequestHandler<CreateCategoryCommand, CreateCategoryCommandResponse>
+                          IRequestHandler<CreateCategoryCommand, Response<CategoryDto>>
     {
         #region Props / Vars
         private readonly IAsyncRepository<Category> _categoryRepository;
@@ -17,9 +17,9 @@
         #endregion
 
         #region Create New Category
-        public async Task<CreateCategoryCommandResponse> Handle(CreateCategoryCommand request, CancellationToken cancellationToken)
+        public async Task<Response<CategoryDto>> Handle(CreateCategoryCommand request, CancellationToken cancellationToken)
         {
-            var createCategoryCommandResponse = new CreateCategoryCommandResponse();
+            Response<CategoryDto> createCategoryCommandResponse = new();
 
             #region Validation
             var validator = new CreateCategoryCommandValidator();
@@ -27,21 +27,14 @@
             var validationResult = await validator.ValidateAsync(request);
 
             if (validationResult.Errors.Any())
-            {
-                createCategoryCommandResponse.Success = false;
-                
-                createCategoryCommandResponse.ValidationErrors = new List<string>();
-              
-                foreach (var error in validationResult.Errors)
-                    createCategoryCommandResponse.ValidationErrors.Add(error.ErrorMessage);
-            } 
+                createCategoryCommandResponse = new(validationResult.Errors);
             #endregion
             
-            var category = new Category() { Name = request.Name };
+            var category =  _mapper.Map<Category>(request);
            
             category = await _categoryRepository.AddAsync(category);
             
-            createCategoryCommandResponse.Category = _mapper.Map<CategoryDto>(category);
+            createCategoryCommandResponse.Data = _mapper.Map<CategoryDto>(category);
 
             return createCategoryCommandResponse;
         }

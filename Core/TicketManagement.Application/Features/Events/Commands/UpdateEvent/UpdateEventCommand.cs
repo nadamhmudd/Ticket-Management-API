@@ -1,6 +1,6 @@
 ﻿namespace TicketManagement.Application.Features.Events.Commands
 {
-    public class UpdateEventCommand : IRequest
+    public class UpdateEventCommand : IRequest<Response<EventDto>>
     {
         public Guid Id { get; set; }
         public string Name { get; set; }

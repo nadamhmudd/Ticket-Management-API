@@ -1,9 +1,9 @@
 ﻿namespace TicketManagement.Application.Features.Events.Commands
 {
     public class EventCommandHandler :
-                    IRequestHandler<CreateEventCommand, Guid>,
-                    IRequestHandler<UpdateEventCommand>,
-                    IRequestHandler<DeleteEventCommand>
+                    IRequestHandler<CreateEventCommand, Response<EventDto>>,
+                    IRequestHandler<UpdateEventCommand, Response<EventDto>>,
+                    IRequestHandler<DeleteEventCommand, Response<EventDto>>
     {
         #region Props / Vars
         private readonly IMapper _mapper;
@@ -19,49 +19,69 @@
         #endregion
 
         #region Create new Event
-        public async Task<Guid> Handle(CreateEventCommand request, CancellationToken cancellationToken)
+        public async Task<Response<EventDto>> Handle(CreateEventCommand request, CancellationToken cancellationToken)
         {
+            var createEventResponse = new Response<EventDto>();
+
+            #region Validation
             var validator = new CreateEventCommandValidator(_eventRepo);
+
             var validationResult = await validator.ValidateAsync(request);
 
             if (validationResult.Errors.Any())
-                throw new Exceptions.ValidationException(validationResult);
+            {
+                createEventResponse = new(validationResult.Errors);
+                //throw new Exceptions.ValidationException(validationResult);
+            } 
+            #endregion
 
             var @event = _mapper.Map<Event>(request);
            
             @event = await _eventRepo.AddAsync(@event);
 
-            return @event.Id;
+            createEventResponse.Data = _mapper.Map<EventDto>(@event);
+
+            return createEventResponse;
         }
         #endregion
 
         #region Update Event
-        public async Task<Unit> Handle(UpdateEventCommand request, CancellationToken cancellationToken)
+        public async Task<Response<EventDto>> Handle(UpdateEventCommand request, CancellationToken cancellationToken)
         {
+            var updateEventResponse = new Response<EventDto>();
+
             var eventToUpdate = await _eventRepo.GetByIdAsync(request.Id);
 
-            #region Validation
             if (eventToUpdate is null)
                 throw new Exceptions.NotFoundException(nameof(Event), request.Id);
 
+            #region Validation
             var validator = new UpdateEventCommandValidator();
+            
             var validationResult = await validator.ValidateAsync(request);
 
             if (validationResult.Errors.Any())
-                throw new Exceptions.ValidationException(validationResult); 
+            {
+                updateEventResponse = new(validationResult.Errors);
+               // throw new Exceptions.ValidationException(validationResult);
+            }
             #endregion
 
             _mapper.Map(request, eventToUpdate, typeof(UpdateEventCommand), typeof(Event));
             
-            await _eventRepo.UpdateAsync(eventToUpdate);
+            var @event = await _eventRepo.UpdateAsync(eventToUpdate);
 
-            return Unit.Value;
+            updateEventResponse.Data = _mapper.Map<EventDto>(@event);
+
+            return updateEventResponse;
         }
         #endregion
 
         #region Delete Event
-        public async Task<Unit> Handle(DeleteEventCommand request, CancellationToken cancellationToken)
+        public async Task<Response<EventDto>> Handle(DeleteEventCommand request, CancellationToken cancellationToken)
         {
+            var deleteEventResponse = new Response<EventDto>();
+
             var eventToDelete = await _eventRepo.GetByIdAsync(request.Id);
 
             if (eventToDelete is null)
@@ -69,7 +89,9 @@
 
             await _eventRepo.DeleteAsync(eventToDelete);
 
-            return Unit.Value;
+            deleteEventResponse.Data = _mapper.Map<EventDto>(eventToDelete);
+
+            return deleteEventResponse;
         } 
         #endregion
     }

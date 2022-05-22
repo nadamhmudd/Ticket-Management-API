@@ -1,6 +1,6 @@
 ﻿namespace TicketManagement.Application.Features.Events.Commands
 {
-    public class DeleteEventCommand : IRequest
+    public class DeleteEventCommand : IRequest<Response<EventDto>>
     {
         public readonly Guid Id;
 

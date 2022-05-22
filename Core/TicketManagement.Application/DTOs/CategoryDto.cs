@@ -1,4 +1,4 @@
-﻿namespace TicketManagement.Application.Features.Categories
+﻿namespace TicketManagement.Application.DTOs
 {
     public record CategoryDto
     {

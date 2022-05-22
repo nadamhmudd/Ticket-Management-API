@@ -1,6 +1,6 @@
 ﻿namespace TicketManagement.Application.Features.Events.Commands
 {
-    public class CreateEventCommand : IRequest<Guid>
+    public class CreateEventCommand : IRequest<Response<EventDto>>
     {
         public string Name { get; set; }
         public double Price { get; set; }
