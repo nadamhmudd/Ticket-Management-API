@@ -6,30 +6,30 @@ namespace TicketManagement.Application.Features.Wrappers
     {
         public Response()
         {
-            Success = true;
+            Succeeded = true;
             ValidationErrors = new List<string>();
         }
         public Response(bool success, string message)
         {
-            Success = success;
+            Succeeded = success;
             Message = message;
         }
         public Response(T data, string message = null)
         {
-            Success = true;
+            Succeeded = true;
             Message = message;
             Data = data;
         }
         public Response(List<ValidationFailure> errors, string message = null)
         {
-            Success = false;
+            Succeeded = false;
             Message = message;
             ValidationErrors = new List<string>();
             foreach (var error in errors)
                 ValidationErrors?.Add(error.ErrorMessage);
         }
 
-        public bool Success { get;  set; }
+        public bool Succeeded { get;  set; }
         public string Message { get; set; }
         public List<string> ValidationErrors { get; set; }
         public T Data { get; set; }

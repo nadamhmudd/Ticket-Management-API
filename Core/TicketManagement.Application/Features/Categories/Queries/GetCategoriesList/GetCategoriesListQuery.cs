@@ -1,6 +1,6 @@
 ﻿namespace TicketManagement.Application.Features.Categories.Queries
 {
-    public class GetCategoriesListQuery : IRequest<List<CategoryDto>>
+    public class GetCategoriesListQuery : IRequest<Response<List<CategoryDto>>>
     {
     }
 }

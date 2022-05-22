@@ -22,16 +22,16 @@ namespace TicketManagement.API.Controllers
         #region Queries
 
         [HttpGet]
-        [ProducesResponseType(StatusCodes.Status200OK)]
-        [ProducesDefaultResponseType]
-        public async Task<ActionResult<List<EventDto>>> GetAllEvents()
+        public async Task<ActionResult<Response<List<EventDto>>>> GetAllEvents()
         {
             return Ok(await _mediator.Send(new GetEventsListQuery()));
         }
 
 
         [HttpGet("{id}")]
-        public async Task<ActionResult<EventDto>> GetEventById(Guid id)
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesDefaultResponseType]
+        public async Task<ActionResult<Response<EventDto>>> GetEventById(Guid id)
         {
             return Ok(await _mediator.Send(new GetEventDetailQuery(id)));
         }
@@ -42,31 +42,27 @@ namespace TicketManagement.API.Controllers
         #region Commands
 
         [HttpPost]
-        public async Task<ActionResult<Guid>> Create([FromBody] CreateEventCommand createEventCommand)
+        public async Task<ActionResult<Response<EventDto>>> Create([FromBody] CreateEventCommand createEventCommand)
         {
             return Ok(await _mediator.Send(createEventCommand));
         }
 
 
         [HttpPut]
-        [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesDefaultResponseType]
-        public async Task<ActionResult> Update([FromBody] UpdateEventCommand updateEventCommand)
+        public async Task<ActionResult<Response<EventDto>>> Update([FromBody] UpdateEventCommand updateEventCommand)
         {
-            await _mediator.Send(updateEventCommand);
-            return NoContent();
+            return Ok(await _mediator.Send(updateEventCommand));
         }
 
 
         [HttpDelete("{id}")]
-        [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesDefaultResponseType]
-        public async Task<ActionResult> Delete(Guid id)
+        public async Task<ActionResult<Response<EventDto>>> Delete(Guid id)
         {
-            await _mediator.Send(new DeleteEventCommand(id));
-            return NoContent();
+            return Ok(await _mediator.Send(new DeleteEventCommand(id)));
         }
 
         #endregion

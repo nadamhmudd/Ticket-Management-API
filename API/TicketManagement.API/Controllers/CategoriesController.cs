@@ -1,8 +1,11 @@
-﻿global using Microsoft.AspNetCore.Mvc;
+﻿#region Using Statements
+global using Microsoft.AspNetCore.Mvc;
 global using MediatR;
+global using TicketManagement.Application.Features.Wrappers;
+global using TicketManagement.Application.DTOs;
 using TicketManagement.Application.Features.Categories.Queries;
-using TicketManagement.Application.Features.Categories.Commands;
-using TicketManagement.Application.Features.Categories;
+using TicketManagement.Application.Features.Categories.Commands; 
+#endregion
 
 namespace TicketManagement.API.Controllers
 {
@@ -24,17 +27,14 @@ namespace TicketManagement.API.Controllers
         #region Queries
 
         [HttpGet("all")]
-        [ProducesResponseType(StatusCodes.Status200OK)]
-        public async Task<ActionResult<List<CategoryDto>>> GetAll()
+        public async Task<ActionResult<Response<List<CategoryDto>>>> GetAll()
         {
             return Ok(await _mediator.Send(new GetCategoriesListQuery()));
         }
 
 
         [HttpGet("allwithevents")]
-        [ProducesDefaultResponseType]
-        [ProducesResponseType(StatusCodes.Status200OK)]
-        public async Task<ActionResult<List<CategoryEventsDto>>> GetCategoriesWithEvents(bool includeHistory)
+        public async Task<ActionResult<Response<List<CategoryEventsDto>>>> GetCategoriesWithEvents(bool includeHistory)
         {
             return Ok(await _mediator.Send(new GetCategoriesListWithEventsQuery(includeHistory)));
         }
@@ -44,7 +44,7 @@ namespace TicketManagement.API.Controllers
         #region Commands
 
         [HttpPost]
-        public async Task<ActionResult<CreateCategoryCommandResponse>> Create([FromBody] CreateCategoryCommand createCommand)
+        public async Task<ActionResult<Response<CategoryDto>>> Create([FromBody] CreateCategoryCommand createCommand)
         {
             return Ok(await _mediator.Send(createCommand));
         }
