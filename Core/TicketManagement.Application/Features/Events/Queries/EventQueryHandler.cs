@@ -6,7 +6,7 @@ namespace TicketManagement.Application.Features.Events.Queries
 {
     public class EventQueryHandler :
                             IRequestHandler<GetEventsListQuery, Response<List<EventDto>>>,
-                            IRequestHandler<GetEventDetailQuery, Response<EventDto>>,
+                            IRequestHandler<GetEventDetailQuery, Response<EventDetailsDto>>,
                             IRequestHandler<GetEventsExportQuery, Response<CsvFile>>
     {
         #region Vars / Props
@@ -34,7 +34,7 @@ namespace TicketManagement.Application.Features.Events.Queries
         #endregion
 
         #region  Get Event Detail Query
-        public async Task<Response<EventDto>> Handle(GetEventDetailQuery request, CancellationToken cancellationToken)
+        public async Task<Response<EventDetailsDto>> Handle(GetEventDetailQuery request, CancellationToken cancellationToken)
         {
             var eventFronDb = await _eventRepo.GetByIdAsync(id: request.Id, include: e => e.Category);
 
@@ -43,11 +43,11 @@ namespace TicketManagement.Application.Features.Events.Queries
 
             var categoryDto = _mapper.Map<CategoryDto>(eventFronDb.Category);
 
-            var eventDatailDto = _mapper.Map<EventDto>(eventFronDb);
+            var eventDatailDto = _mapper.Map<EventDetailsDto>(eventFronDb);
             
             eventDatailDto.Category = categoryDto;
 
-            return new Response<EventDto>(eventDatailDto);
+            return new Response<EventDetailsDto>(eventDatailDto);
         }
         #endregion
 

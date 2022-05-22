@@ -31,7 +31,7 @@ namespace TicketManagement.API.Controllers
         [HttpGet("{id}")]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesDefaultResponseType]
-        public async Task<ActionResult<Response<EventDto>>> GetEventById(Guid id)
+        public async Task<ActionResult<Response<EventDetailsDto>>> GetEventById(Guid id)
         {
             return Ok(await _mediator.Send(new GetEventDetailQuery(id)));
         }

@@ -13,6 +13,7 @@ namespace TicketManagement.Application.Mappings
             CreateMap<Category, CreateCategoryCommand>().ReverseMap();
 
             CreateMap<Event, EventDto>().ReverseMap();
+            CreateMap<Event, EventDetailsDto>().ReverseMap();
             CreateMap<Event, CreateEventCommand>().ReverseMap();
             CreateMap<Event, UpdateEventCommand>().ReverseMap();
             CreateMap<Event, EventExportDto>().ReverseMap();

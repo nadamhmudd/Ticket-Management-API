@@ -1,9 +1,7 @@
 ﻿namespace TicketManagement.Application.DTOs
 { 
-    public class CategoryEventsDto
+    public record CategoryEventsDto : CategoryDto
     {
-        public Guid Id { get; set; }
-        public string Name { get; set; }
         public ICollection<EventDto> Events { get; set; }
     }
 }

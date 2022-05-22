@@ -2,7 +2,7 @@
 
 namespace TicketManagement.Application.Features.Events.Queries
 {
-    public class GetEventDetailQuery : IRequest<Response<EventDto>>
+    public class GetEventDetailQuery : IRequest<Response<EventDetailsDto>>
     {
         public readonly Guid Id; //parameter needed
 
