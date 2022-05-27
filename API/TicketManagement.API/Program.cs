@@ -3,6 +3,7 @@ global using TicketManagement.Application;
 global using TicketManagement.DataPersistence;
 global using TicketManagement.Infrastructure;
 using Microsoft.OpenApi.Models;
+using TicketManagement.API.Middleware;
 #endregion
 
 var builder = WebApplication.CreateBuilder(args);
@@ -63,6 +64,8 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
+
+app.UseCustomExceptionHandler();
 
 app.UseCors(_policyName); //add core before authorization
 
