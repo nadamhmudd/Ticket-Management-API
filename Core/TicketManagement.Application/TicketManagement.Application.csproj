@@ -12,6 +12,7 @@
     <PackageReference Include="FluentValidation" Version="11.0.1" />
     <PackageReference Include="FluentValidation.DependencyInjectionExtensions" Version="11.0.1" />
     <PackageReference Include="MediatR.Extensions.Microsoft.DependencyInjection" Version="10.0.1" />
+    <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="6.0.1" />
   </ItemGroup>
 
   <ItemGroup>
@@ -20,7 +21,6 @@
 
   <ItemGroup>
     <Folder Include="Features\Orders\Commands\" />
-    <Folder Include="Features\Orders\Queries\" />
   </ItemGroup>
 
 </Project>

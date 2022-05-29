@@ -26,14 +26,13 @@ namespace TicketManagement.API.Controllers
 
         #region Queries
 
-        [HttpGet("all")]
-        public async Task<ActionResult<Response<List<CategoryDto>>>> GetAll()
+        [HttpGet("all", Name = "GetAllCategories")]
+        public async Task<ActionResult<Response<List<CategoryDto>>>> GetAllCategoriesAsync()
         {
             return Ok(await _mediator.Send(new GetCategoriesListQuery()));
         }
 
-
-        [HttpGet("allwithevents")]
+        [HttpGet("allwithevents", Name = "GetCategoriesWithEvents")]
         public async Task<ActionResult<Response<List<CategoryEventsDto>>>> GetCategoriesWithEvents(bool includeHistory)
         {
             return Ok(await _mediator.Send(new GetCategoriesListWithEventsQuery(includeHistory)));
@@ -42,9 +41,8 @@ namespace TicketManagement.API.Controllers
         #endregion
 
         #region Commands
-
-        [HttpPost]
-        public async Task<ActionResult<Response<CategoryDto>>> Create([FromBody] CreateCategoryCommand createCommand)
+        [HttpPost(Name = "AddCategory")]
+        public async Task<ActionResult<Response<CategoryDto>>> CreateCategory([FromBody] CreateCategoryCommand createCommand)
         {
             return Ok(await _mediator.Send(createCommand));
         }

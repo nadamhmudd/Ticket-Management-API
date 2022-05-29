@@ -1,4 +1,6 @@
-﻿namespace TicketManagement.Application.Features.Events.Commands
+﻿using Microsoft.Extensions.Logging;
+
+namespace TicketManagement.Application.Features.Events.Commands
 {
     public class EventCommandHandler :
                     IRequestHandler<CreateEventCommand, Response<EventDto>>,
@@ -8,13 +10,15 @@
         #region Props / Vars
         private readonly IMapper _mapper;
         private readonly IEventRepository _eventRepo; 
+        private readonly ILogger<EventCommandHandler> _logger;
         #endregion
 
         #region Constructor(s)
-        public EventCommandHandler(IMapper mapper, IEventRepository eventRepo)
+        public EventCommandHandler(IMapper mapper, IEventRepository eventRepo, ILogger<EventCommandHandler> logger)
         {
             _mapper = mapper;
             _eventRepo = eventRepo;
+            _logger = logger;
         }
         #endregion
 
@@ -30,6 +34,7 @@
 
             if (validationResult.Errors.Any())
             {
+                /* return*/
                 createEventResponse = new(validationResult.Errors);
                 //throw new Exceptions.ValidationException(validationResult);
             } 

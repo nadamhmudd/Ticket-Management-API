@@ -12,6 +12,11 @@
 		<IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
 	</PackageReference>
 	<PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
+	<PackageReference Include="Serilog" Version="2.11.0" />
+	<PackageReference Include="Serilog.AspNetCore" Version="5.0.0" />
+	<PackageReference Include="Serilog.Extensions.Logging" Version="3.1.0" />
+	<PackageReference Include="Serilog.Settings.Configuration" Version="3.3.0" />
+	<PackageReference Include="Serilog.Sinks.File" Version="5.0.0" />
     <PackageReference Include="Swashbuckle.AspNetCore" Version="6.3.1" />
     <PackageReference Include="Swashbuckle.AspNetCore.Swagger" Version="6.3.1" />
   </ItemGroup>
@@ -19,6 +24,7 @@
   <ItemGroup>
     <ProjectReference Include="..\..\Core\TicketManagement.Application\TicketManagement.Application.csproj" />
     <ProjectReference Include="..\..\Infrastructure\TicketManagement.DataPersistence\TicketManagement.DataPersistence.csproj" />
+    <ProjectReference Include="..\..\Infrastructure\TicketManagement.Identity\TicketManagement.Identity.csproj" />
     <ProjectReference Include="..\..\Infrastructure\TicketManagement.Infrastructure\TicketManagement.Infrastructure.csproj" />
   </ItemGroup>
 

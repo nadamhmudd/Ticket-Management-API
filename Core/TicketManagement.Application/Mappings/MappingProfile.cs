@@ -1,6 +1,7 @@
 ﻿using TicketManagement.Application.Features.Categories.Commands;
 using TicketManagement.Application.Features.Events.Commands;
 using TicketManagement.Application.Features.Events.Queries;
+using TicketManagement.Application.Features.Orders.Queries;
 
 namespace TicketManagement.Application.Mappings
 {
@@ -17,6 +18,8 @@ namespace TicketManagement.Application.Mappings
             CreateMap<Event, CreateEventCommand>().ReverseMap();
             CreateMap<Event, UpdateEventCommand>().ReverseMap();
             CreateMap<Event, EventExportDto>().ReverseMap();
+
+            CreateMap<Order, OrdersForMonthDto>().ReverseMap();
 
         }
     }

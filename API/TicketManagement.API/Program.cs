@@ -1,20 +1,40 @@
 #region Using Statements
 global using TicketManagement.Application;
-global using TicketManagement.DataPersistence;
-global using TicketManagement.Infrastructure;
+using TicketManagement.DataPersistence;
+using TicketManagement.Infrastructure;
+using TicketManagement.Identity;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.OpenApi.Models;
+using Serilog;
+using TicketManagement.Api.Utility;
 using TicketManagement.API.Middleware;
+using TicketManagement.Identity.Models;
+using TicketManagement.Application.Interfaces;
+using TicketManagement.Api.Services;
 #endregion
 
 var builder = WebApplication.CreateBuilder(args);
 
 #region ConfigureServices : Add services to the container.
 
+#region Add Serilog Logging 
+Log.Logger = new LoggerConfiguration()
+    .ReadFrom.Configuration(builder.Configuration)
+    .WriteTo.File("Logs/log-.txt", rollingInterval: RollingInterval.Day)
+    .CreateLogger();
+
+builder.Logging.ClearProviders();
+builder.Logging.AddSerilog(Log.Logger);
+#endregion
+
 #region  Add Application, DataPersistence and Infrastructure Libraries
 builder.Services.AddDataPersistenceServices(builder.Configuration);
 builder.Services.AddApplicationServices();
 builder.Services.AddInfrastructureServices(builder.Configuration);
+builder.Services.AddIdentityServices(builder.Configuration);
 #endregion
+
+builder.Services.AddScoped<ILoggedInUserService, LoggedInUserService>();
 
 builder.Services.AddControllers();
 
@@ -36,15 +56,48 @@ builder.Services.AddCors(options =>
 #region configuring Swagger/OpenAPI
 builder.Services.AddSwaggerGen(c =>
 {
-c.SwaggerDoc("v1", new OpenApiInfo
-{
-Version = "v1",
-Title = "Ticket Management API",
+    c.SwaggerDoc("v1", new OpenApiInfo
+    {
+        Version = "v1",
+        Title = "Ticket Management API",
 
-});
+    });
 
-    //support csv files
-    //c.OperationFilter<FileResultContentTypeOperationFilter>();
+    #region support JWT
+    c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
+    {
+        Description = @"JWT Authorization header using the Bearer scheme. \r\n\r\n 
+                    Enter 'Bearer' [space] and then your token in the text input below.
+                    \r\n\r\nExample: 'Bearer 12345abcdef'",
+        Name = "Authorization",
+        In = ParameterLocation.Header,
+        Type = SecuritySchemeType.ApiKey,
+        Scheme = "Bearer"
+    });
+
+    c.AddSecurityRequirement(new OpenApiSecurityRequirement()
+                {
+                {
+                    new OpenApiSecurityScheme
+                    {
+                    Reference = new OpenApiReference
+                        {
+                        Type = ReferenceType.SecurityScheme,
+                        Id = "Bearer"
+                        },
+                        Scheme = "oauth2",
+                        Name = "Bearer",
+                        In = ParameterLocation.Header,
+
+                    },
+                    new List<string>()
+                    }
+                });
+    #endregion
+
+    #region support csv files
+    c.OperationFilter<FileResultContentTypeOperationFilter>(); 
+    #endregion
 }); 
 #endregion
 
@@ -65,13 +118,43 @@ if (app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 
+app.UseAuthentication();
+
 app.UseCustomExceptionHandler();
 
 app.UseCors(_policyName); //add core before authorization
 
 app.UseAuthorization();
 
-app.MapControllers(); 
+app.MapControllers();
 #endregion
 
+SeedData();
+
 app.Run();
+
+#region Helper Methods
+
+async void SeedData()
+{
+    using (var scope = app.Services.CreateScope())
+    {
+        var services = scope.ServiceProvider;
+        var loggerFactory = services.GetRequiredService<ILoggerFactory>();
+
+        try
+        {
+            var userManager = services.GetRequiredService<UserManager<ApplicationUser>>();
+
+            await TicketManagement.Identity.Seed.UserCreator.SeedAsync(userManager);
+
+            Log.Information("Application Starting");
+        }
+        catch (Exception ex)
+        {
+            Log.Warning(ex, "An error occured while starting the application");
+        }
+    }
+} 
+
+#endregion
