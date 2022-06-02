@@ -1,4 +1,4 @@
-﻿namespace TicketManagement.Application.Interfaces.Repositories
+﻿namespace TicketManagement.Application.Interfaces
 {
     public interface IOrderRepository : IAsyncRepository<Order>
     {

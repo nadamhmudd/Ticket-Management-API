@@ -1,4 +1,4 @@
-﻿global using TicketManagement.Application.Interfaces.Repositories;
+﻿global using TicketManagement.Application.Interfaces;
 global using TicketManagement.DataPersistence.Repositories;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;

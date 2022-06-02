@@ -1,6 +1,6 @@
 ﻿using System.Linq.Expressions;
 
-namespace TicketManagement.Application.Interfaces.Repositories
+namespace TicketManagement.Application.Interfaces
 {
     public interface IEventRepository : IAsyncRepository <Event>
     {

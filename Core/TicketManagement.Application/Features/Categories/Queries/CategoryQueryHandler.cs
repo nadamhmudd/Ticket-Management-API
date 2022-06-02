@@ -1,5 +1,4 @@
-﻿using AutoMapper;
-using TicketManagement.Application.Interfaces.Repositories;
+﻿using TicketManagement.Application.Interfaces;
 
 namespace TicketManagement.Application.Features.Categories.Queries
 {

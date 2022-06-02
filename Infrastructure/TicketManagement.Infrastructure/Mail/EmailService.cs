@@ -1,4 +1,4 @@
-﻿global using TicketManagement.Application.Interfaces.Infrastructure;
+﻿global using TicketManagement.Application.Interfaces;
 global using TicketManagement.Application.Models.Mail;
 using Microsoft.Extensions.Options;
 

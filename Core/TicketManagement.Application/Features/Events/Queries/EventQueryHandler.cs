@@ -1,6 +1,5 @@
 ﻿global using AutoMapper;
-global using TicketManagement.Application.Interfaces.Repositories;
-using TicketManagement.Application.Contracts.Infrastructure;
+global using TicketManagement.Application.Interfaces;
 
 namespace TicketManagement.Application.Features.Events.Queries
 {

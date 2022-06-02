@@ -1,4 +1,4 @@
-﻿using TicketManagement.Application.Contracts.Identity;
+﻿using TicketManagement.Application.Interfaces;
 using TicketManagement.Application.Models.Authentication;
 using TicketManagement.Identity.Models;
 using Microsoft.AspNetCore.Identity;
@@ -19,17 +19,44 @@ namespace TicketManagement.Identity.Services
         #endregion
 
         #region Ctor
-        public AuthenticationService(UserManager<ApplicationUser> userManager,
-            IOptions<JwtSettings> jwtSettings,
-            SignInManager<ApplicationUser> signInManager)
+        public AuthenticationService(
+            UserManager<ApplicationUser> userManager, 
+            SignInManager<ApplicationUser> signInManager,
+            IOptions<JwtSettings> jwtSettings
+            )
         {
             _userManager = userManager;
-            _jwtSettings = jwtSettings.Value;
             _signInManager = signInManager;
+            _jwtSettings = jwtSettings.Value;
         }
         #endregion
 
         #region Actions
+        public async Task<RegistrationResponse> RegisterAsync(RegistrationRequest request)
+        {
+            if (await _userManager.FindByNameAsync(request.UserName) is not null)
+                throw new Exception($"Username '{request.UserName}' already exists.");
+
+            if (await _userManager.FindByNameAsync(request.Email) is not null)
+                throw new Exception($"Email {request.Email } already exists.");
+
+            var user = new ApplicationUser
+            {
+                Email = request.Email,
+                FirstName = request.FirstName,
+                LastName = request.LastName,
+                UserName = request.UserName,
+                EmailConfirmed = true
+            };
+
+            var result = await _userManager.CreateAsync(user, request.Password);
+
+            if (!result.Succeeded)
+                throw new Exception($"{result.Errors}");
+
+            return new RegistrationResponse() { UserId = user.Id };
+        }
+
         public async Task<AuthenticationResponse> AuthenticateAsync(AuthenticationRequest request)
         {
             var user = await _userManager.FindByEmailAsync(request.Email);
@@ -54,31 +81,6 @@ namespace TicketManagement.Identity.Services
                 UserName = user.UserName
             };
         }
-
-        public async Task<RegistrationResponse> RegisterAsync(RegistrationRequest request)
-        {
-            if (await _userManager.FindByNameAsync(request.UserName) is not null)
-                throw new Exception($"Username '{request.UserName}' already exists.");
-            
-            if (await _userManager.FindByNameAsync(request.Email) is not null)
-                throw new Exception($"Email {request.Email } already exists.");
-
-            var user = new ApplicationUser
-            {
-                Email = request.Email,
-                FirstName = request.FirstName,
-                LastName = request.LastName,
-                UserName = request.UserName,
-                EmailConfirmed = true
-            };
-
-            var result = await _userManager.CreateAsync(user, request.Password);
-
-            if (!result.Succeeded)
-                throw new Exception($"{result.Errors}");
-            
-            return new RegistrationResponse() { UserId = user.Id };
-        } 
         #endregion
 
         #region Private actions

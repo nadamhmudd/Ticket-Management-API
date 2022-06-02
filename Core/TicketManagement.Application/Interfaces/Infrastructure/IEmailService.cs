@@ -1,6 +1,6 @@
 ﻿using TicketManagement.Application.Models.Mail;
 
-namespace TicketManagement.Application.Interfaces.Infrastructure
+namespace TicketManagement.Application.Interfaces
 {
     public interface IEmailService
     {

@@ -1,4 +1,4 @@
-﻿using TicketManagement.Application.Contracts.Identity;
+﻿using TicketManagement.Application.Interfaces;
 using TicketManagement.Application.Models.Authentication;
 
 namespace TicketManagement.Api.Controllers
@@ -19,18 +19,17 @@ namespace TicketManagement.Api.Controllers
         #endregion
 
         #region Actions
+        [HttpPost("Register")]
+        public async Task<ActionResult<RegistrationResponse>> RegisterAsync(RegistrationRequest request)
+        {
+            return Ok(await _authenticationService.RegisterAsync(request));
+        }
 
-        [HttpPost("authenticate")]
+        [HttpPost("Authenticate")]
         public async Task<ActionResult<AuthenticationResponse>> AuthenticateAsync(AuthenticationRequest request)
         {
             return Ok(await _authenticationService.AuthenticateAsync(request));
         }
-
-        [HttpPost("register")]
-        public async Task<ActionResult<RegistrationResponse>> RegisterAsync(RegistrationRequest request)
-        {
-            return Ok(await _authenticationService.RegisterAsync(request));
-        } 
         #endregion
     }
 }

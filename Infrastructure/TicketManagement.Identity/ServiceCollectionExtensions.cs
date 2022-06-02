@@ -1,4 +1,4 @@
-﻿using TicketManagement.Application.Contracts.Identity;
+﻿using TicketManagement.Application.Interfaces;
 using TicketManagement.Application.Models.Authentication;
 using TicketManagement.Identity.Models;
 using TicketManagement.Identity.Services;

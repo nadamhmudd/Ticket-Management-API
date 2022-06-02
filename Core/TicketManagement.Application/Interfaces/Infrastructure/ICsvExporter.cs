@@ -1,6 +1,6 @@
 ﻿using TicketManagement.Application.Features.Events.Queries;
 
-namespace TicketManagement.Application.Contracts.Infrastructure
+namespace TicketManagement.Application.Interfaces
 {
     public interface ICsvExporter
     {

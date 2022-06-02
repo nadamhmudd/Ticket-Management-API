@@ -1,6 +1,5 @@
 ﻿using CsvHelper;
 using System.Globalization;
-using TicketManagement.Application.Contracts.Infrastructure;
 using TicketManagement.Application.Features.Events.Queries;
 
 namespace TicketManagement.Infrastructure
