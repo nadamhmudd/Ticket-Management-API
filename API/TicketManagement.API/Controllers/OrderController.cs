@@ -20,8 +20,6 @@ namespace TicketManagement.Api.Controllers
         #region Actions
 
         [HttpGet("/getpagedordersformonth", Name = "GetPagedOrdersForMonth")]
-        [ProducesResponseType(StatusCodes.Status200OK)]
-        [ProducesDefaultResponseType]
         public async Task<ActionResult<PagedOrdersForMonthVm>> GetPagedOrdersForMonth(DateTime date, int page, int size)
         {
             var getOrdersForMonthQuery = new GetOrdersForMonthQuery() { Date = date, Page = page, Size = size };

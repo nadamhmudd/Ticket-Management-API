@@ -50,16 +50,12 @@ namespace TicketManagement.API.Controllers
         }
 
         [HttpPut(Name = "UpdateEvent")]
-        [ProducesResponseType(StatusCodes.Status404NotFound)]
-        [ProducesDefaultResponseType]
         public async Task<ActionResult<EventDto>> UpdateEvent([FromBody] UpdateEventCommand updateEventCommand)
         {
             return Ok(await _mediator.Send(updateEventCommand));
         }
 
         [HttpDelete("{id}", Name = "DeleteEvent")]
-        [ProducesResponseType(StatusCodes.Status404NotFound)]
-        [ProducesDefaultResponseType]
         public async Task<ActionResult<EventDto>> DeleteEvent(Guid id)
         {
             return Ok(await _mediator.Send(new DeleteEventCommand(id)));
