@@ -1,5 +1,5 @@
 ﻿using TicketManagement.Application.Interfaces;
-using TicketManagement.Application.Models.Authentication;
+using TicketManagement.Application.Models;
 using TicketManagement.Identity.Models;
 using TicketManagement.Identity.Services;
 using Microsoft.AspNetCore.Identity;

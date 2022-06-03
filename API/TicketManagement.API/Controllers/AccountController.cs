@@ -1,5 +1,5 @@
 ﻿using TicketManagement.Application.Interfaces;
-using TicketManagement.Application.Models.Authentication;
+using TicketManagement.Application.Models;
 
 namespace TicketManagement.Api.Controllers
 {

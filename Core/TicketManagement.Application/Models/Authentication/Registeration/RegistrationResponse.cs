@@ -1,4 +1,4 @@
-﻿namespace TicketManagement.Application.Models.Authentication
+﻿namespace TicketManagement.Application.Models
 {
     public class RegistrationResponse
     {

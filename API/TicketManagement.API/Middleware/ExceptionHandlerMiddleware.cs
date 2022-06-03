@@ -26,6 +26,8 @@ namespace TicketManagement.API.Middleware
             }
         }
 
+        ///
+        /// Converts the exception for use by the client
         private Task ConvertException(HttpContext context, Exception exception)
         {
             HttpStatusCode httpStatusCode = HttpStatusCode.InternalServerError;

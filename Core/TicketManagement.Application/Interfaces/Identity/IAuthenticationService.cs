@@ -1,6 +1,4 @@
-﻿using TicketManagement.Application.Models.Authentication;
-
-namespace TicketManagement.Application.Interfaces
+﻿namespace TicketManagement.Application.Interfaces
 {
     public interface IAuthenticationService
     {

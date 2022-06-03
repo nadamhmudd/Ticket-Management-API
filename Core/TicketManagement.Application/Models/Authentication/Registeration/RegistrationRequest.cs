@@ -1,24 +1,25 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace TicketManagement.Application.Models.Authentication
+namespace TicketManagement.Application.Models
 {
     public class RegistrationRequest
     {
+        [Required]
         public string FirstName { get; set; }
 
+        [Required]
         public string LastName { get; set; }
 
-        [EmailAddress]
+        [Required, EmailAddress]
         public string Email { get; set; }
 
-        [MinLength(6)]
+        [Required, MinLength(6)]
         public string UserName { get; set; }
 
-        [MinLength(6)]
-        [DataType(DataType.Password)]
+        [Required, DataType(DataType.Password), MinLength(6)]
         public string Password { get; set; }
 
-        [Phone]
-        public string Mobile { get; set; }
+        [Required, Phone]
+        public string PhoneNumber { get; set; }
     }
 }

@@ -120,6 +120,7 @@ app.UseHttpsRedirection();
 
 app.UseAuthentication();
 
+//middleware
 app.UseCustomExceptionHandler();
 
 app.UseCors(_policyName); //add core before authorization

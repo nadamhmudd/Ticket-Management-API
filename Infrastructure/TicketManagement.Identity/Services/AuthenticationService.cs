@@ -1,5 +1,5 @@
 ﻿using TicketManagement.Application.Interfaces;
-using TicketManagement.Application.Models.Authentication;
+using TicketManagement.Application.Models;
 using TicketManagement.Identity.Models;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Options;
@@ -46,13 +46,15 @@ namespace TicketManagement.Identity.Services
                 FirstName = request.FirstName,
                 LastName = request.LastName,
                 UserName = request.UserName,
-                EmailConfirmed = true
+                PhoneNumber = request.PhoneNumber
             };
 
             var result = await _userManager.CreateAsync(user, request.Password);
 
             if (!result.Succeeded)
-                throw new Exception($"{result.Errors}");
+            {
+                throw new Exception($"{result.ErrorDescription()}");
+            }
 
             return new RegistrationResponse() { UserId = user.Id };
         }
@@ -76,9 +78,7 @@ namespace TicketManagement.Identity.Services
             return new AuthenticationResponse
             {
                 Id = user.Id,
-                Token = new JwtSecurityTokenHandler().WriteToken(jwtSecurityToken),
-                Email = user.Email,
-                UserName = user.UserName
+                Token = new JwtSecurityTokenHandler().WriteToken(jwtSecurityToken)
             };
         }
         #endregion
