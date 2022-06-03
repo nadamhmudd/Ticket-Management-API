@@ -1,6 +1,4 @@
-﻿using Microsoft.Extensions.Logging;
-
-namespace TicketManagement.Application.Features.Events.Commands
+﻿namespace TicketManagement.Application.Features.Events.Commands
 {
     public class EventCommandHandler :
                     IRequestHandler<CreateEventCommand, Response<EventDto>>,
@@ -35,7 +33,7 @@ namespace TicketManagement.Application.Features.Events.Commands
             if (validationResult.Errors.Any())
             {
                 /* return*/
-                createEventResponse = new(validationResult.Errors);
+               // createEventResponse = new(validationResult);
                 //throw new Exceptions.ValidationException(validationResult);
             } 
             #endregion

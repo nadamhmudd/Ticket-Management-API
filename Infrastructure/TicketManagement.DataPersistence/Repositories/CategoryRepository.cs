@@ -6,7 +6,7 @@
         {
         }
 
-        public async Task<List<Category>> GetCategoriesWithEvents(bool includePassedEvents)
+        public async Task<List<Category>> GetCategoriesWithEventsAsync(bool includePassedEvents)
         {
             var allCategories = await _dbContext.Categories.Include(x => x.Events).ToListAsync();
             
@@ -15,6 +15,19 @@
                              .RemoveAll(c => c.Date < DateTime.Today));
             
             return allCategories;
+        }
+
+        public async Task<Category> GetByNameAsync(string name)
+        {
+            return await _dbContext.Categories
+                .Where(c => c.Name == name)
+                .SingleOrDefaultAsync()
+                ;
+        }
+
+        public async Task<bool> IsUnique(string name)
+        {
+            return (await GetByNameAsync(name) is null);
         }
     }
 }

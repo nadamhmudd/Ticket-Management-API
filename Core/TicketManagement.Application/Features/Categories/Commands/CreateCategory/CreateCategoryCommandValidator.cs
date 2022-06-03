@@ -2,12 +2,26 @@
 {
     public class CreateCategoryCommandValidator: AbstractValidator<CreateCategoryCommand>
     {
-        public CreateCategoryCommandValidator()
+        #region Vars
+        private readonly ICategoryRepository _categoryRepo;
+        #endregion
+
+        public CreateCategoryCommandValidator(ICategoryRepository categoryRepo)
         {
-            RuleFor(p => p.Name)
+            _categoryRepo = categoryRepo;
+
+            //ApplyValidationRules
+            RuleFor(c => c.Name)
                 .NotEmpty().WithMessage("{PropertyName} is required.")
                 .NotNull()
-                .MaximumLength(50).WithMessage("{PropertyName} must not exceed 10 characters.");
+                .MaximumLength(50).WithMessage("{PropertyName} must not exceed 10 characters.")
+                .MustAsync(CategoryNameUnique).WithMessage("A category with the same {PropertyName} already exists.")
+            ;
         }
+
+        #region Custom Validation Rules
+        private async Task<bool> CategoryNameUnique(string name, CancellationToken token)
+           => await _categoryRepo.IsUnique(name); 
+        #endregion
     }
 }

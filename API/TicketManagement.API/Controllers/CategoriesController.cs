@@ -25,28 +25,25 @@ namespace TicketManagement.API.Controllers
         #endregion
 
         #region Queries
-
         [HttpGet("all", Name = "GetAllCategories")]
-        public async Task<ActionResult<Response<List<CategoryDto>>>> GetAllCategoriesAsync()
+        public async Task<ActionResult<List<CategoryDto>>> GetAllAsync()
         {
             return Ok(await _mediator.Send(new GetCategoriesListQuery()));
         }
 
         [HttpGet("allwithevents", Name = "GetCategoriesWithEvents")]
-        public async Task<ActionResult<Response<List<CategoryEventsDto>>>> GetCategoriesWithEvents(bool includeHistory)
+        public async Task<ActionResult<List<CategoryEventsDto>>> GetAllWithEventsAsync(bool includeHistory)
         {
             return Ok(await _mediator.Send(new GetCategoriesListWithEventsQuery(includeHistory)));
         }
-
         #endregion
 
         #region Commands
         [HttpPost(Name = "AddCategory")]
-        public async Task<ActionResult<Response<CategoryDto>>> CreateCategory([FromBody] CreateCategoryCommand createCommand)
+        public async Task<ActionResult<CategoryDto>> CreateAsync([FromBody] CreateCategoryCommand createCommand)
         {
             return Ok(await _mediator.Send(createCommand));
         }
-
         #endregion
     }
 }

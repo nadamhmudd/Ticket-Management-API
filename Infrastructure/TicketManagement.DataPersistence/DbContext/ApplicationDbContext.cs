@@ -20,7 +20,7 @@ namespace TicketManagement.DataPersistence
         #region OnModelCreating Overriding
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            //fluent validation
+            //fluent validation1
             modelBuilder.ApplyConfigurationsFromAssembly(typeof(ApplicationDbContext).Assembly);
 
             //seed data, added through migrations
