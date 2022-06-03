@@ -1,6 +1,6 @@
 ﻿namespace TicketManagement.Application.Features.Orders.Queries
 {
-    public class PagedOrdersForMonthVm
+    public class PagedOrdersForMonthResponse
     {
         public int Count { get; set; }
         public int Page { get; set; }

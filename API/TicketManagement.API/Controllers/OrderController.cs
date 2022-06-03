@@ -18,16 +18,12 @@ namespace TicketManagement.Api.Controllers
         #endregion
 
         #region Actions
-
         [HttpGet("/getpagedordersformonth", Name = "GetPagedOrdersForMonth")]
-        public async Task<ActionResult<PagedOrdersForMonthVm>> GetPagedOrdersForMonth(DateTime date, int page, int size)
+        public async Task<ActionResult<PagedOrdersForMonthResponse>> GetPagedOrdersForMonth(DateTime date, int page, int size)
         {
-            var getOrdersForMonthQuery = new GetOrdersForMonthQuery() { Date = date, Page = page, Size = size };
-            var dtos = await _mediator.Send(getOrdersForMonthQuery);
-
-            return Ok(dtos);
-        } 
-
+            return Ok(await _mediator.Send(
+                new GetOrdersForMonthQuery(date, page, size)));
+        }
         #endregion
     }
 }
