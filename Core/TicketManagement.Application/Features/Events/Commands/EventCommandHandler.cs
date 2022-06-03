@@ -1,9 +1,9 @@
 ﻿namespace TicketManagement.Application.Features.Events.Commands
 {
     public class EventCommandHandler :
-                    IRequestHandler<CreateEventCommand, Response<EventDto>>,
-                    IRequestHandler<UpdateEventCommand, Response<EventDto>>,
-                    IRequestHandler<DeleteEventCommand, Response<EventDto>>
+                    IRequestHandler<CreateEventCommand, EventDto>,
+                    IRequestHandler<UpdateEventCommand, EventDto>,
+                    IRequestHandler<DeleteEventCommand, EventDto>
     {
         #region Props / Vars
         private readonly IMapper _mapper;
@@ -21,80 +21,94 @@
         #endregion
 
         #region Create new Event
-        public async Task<Response<EventDto>> Handle(CreateEventCommand request, CancellationToken cancellationToken)
+        public async Task<EventDto> Handle(CreateEventCommand request, CancellationToken cancellationToken)
         {
-            var createEventResponse = new Response<EventDto>();
-
-            #region Validation
-            var validator = new CreateEventCommandValidator(_eventRepo);
-
-            var validationResult = await validator.ValidateAsync(request);
-
-            if (validationResult.Errors.Any())
+            try
             {
-                /* return*/
-               // createEventResponse = new(validationResult);
-                //throw new Exceptions.ValidationException(validationResult);
-            } 
-            #endregion
+                #region Validation
+                var validator = new CreateEventCommandValidator(_eventRepo);
 
-            var @event = _mapper.Map<Event>(request);
+                var validationResult = await validator.ValidateAsync(request);
+
+                if (validationResult.Errors.Any())
+                {
+                    throw new Exceptions.ValidationException(validationResult);
+                }
+                #endregion
+
+                var @event = _mapper.Map<Event>(request);
+
+                @event = await _eventRepo.AddAsync(@event);
+
+                return _mapper.Map<EventDto>(@event);
+            }
+            catch (Exception ex)
+            {
+                if (ex.GetType() != typeof(Exceptions.ValidationException))
+                    _logger.LogError(ex.Message);
+
+                throw;
+            }
            
-            @event = await _eventRepo.AddAsync(@event);
-
-            createEventResponse.Data = _mapper.Map<EventDto>(@event);
-
-            return createEventResponse;
         }
         #endregion
 
         #region Update Event
-        public async Task<Response<EventDto>> Handle(UpdateEventCommand request, CancellationToken cancellationToken)
+        public async Task<EventDto> Handle(UpdateEventCommand request, CancellationToken cancellationToken)
         {
-            var updateEventResponse = new Response<EventDto>();
-
-            var eventToUpdate = await _eventRepo.GetByIdAsync(request.Id);
-
-            if (eventToUpdate is null)
-                throw new Exceptions.NotFoundException(nameof(Event), request.Id);
-
-            #region Validation
-            var validator = new UpdateEventCommandValidator();
-            
-            var validationResult = await validator.ValidateAsync(request);
-
-            if (validationResult.Errors.Any())
+            try
             {
-                updateEventResponse = new(validationResult.Errors);
-               // throw new Exceptions.ValidationException(validationResult);
+                var eventToUpdate = await _eventRepo.GetByIdAsync(request.Id);
+
+                if (eventToUpdate is null)
+                    throw new Exceptions.NotFoundException(nameof(Event), request.Id);
+
+                #region Validation
+                var validator = new UpdateEventCommandValidator();
+
+                var validationResult = await validator.ValidateAsync(request);
+
+                if (validationResult.Errors.Any())
+                    throw new Exceptions.ValidationException(validationResult);
+                #endregion
+
+                _mapper.Map(request, eventToUpdate, typeof(UpdateEventCommand), typeof(Event));
+
+                var @event = await _eventRepo.UpdateAsync(eventToUpdate);
+
+                return _mapper.Map<EventDto>(@event);
             }
-            #endregion
+            catch (Exception ex)
+            {
+                if (ex.GetType() != typeof(Exceptions.NotFoundException)|| ex.GetType() != typeof(Exceptions.ValidationException))
+                    _logger.LogError(ex.Message);
 
-            _mapper.Map(request, eventToUpdate, typeof(UpdateEventCommand), typeof(Event));
-            
-            var @event = await _eventRepo.UpdateAsync(eventToUpdate);
-
-            updateEventResponse.Data = _mapper.Map<EventDto>(@event);
-
-            return updateEventResponse;
+                throw;
+            }
         }
         #endregion
 
         #region Delete Event
-        public async Task<Response<EventDto>> Handle(DeleteEventCommand request, CancellationToken cancellationToken)
+        public async Task<EventDto> Handle(DeleteEventCommand request, CancellationToken cancellationToken)
         {
-            var deleteEventResponse = new Response<EventDto>();
+            try
+            {
+                var eventToDelete = await _eventRepo.GetByIdAsync(request.Id);
 
-            var eventToDelete = await _eventRepo.GetByIdAsync(request.Id);
+                if (eventToDelete is null)
+                    throw new Exceptions.NotFoundException(nameof(Event), request.Id);
 
-            if (eventToDelete is null)
-                throw new Exceptions.NotFoundException(nameof(Event), request.Id);
+                await _eventRepo.DeleteAsync(eventToDelete);
 
-            await _eventRepo.DeleteAsync(eventToDelete);
+                return _mapper.Map<EventDto>(eventToDelete);
+            }
+            catch (Exception ex)
+            {
+                if (ex.GetType() != typeof(Exceptions.NotFoundException))
+                    _logger.LogError(ex.Message);
 
-            deleteEventResponse.Data = _mapper.Map<EventDto>(eventToDelete);
-
-            return deleteEventResponse;
+                throw;
+            }
         } 
         #endregion
     }

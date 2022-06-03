@@ -2,7 +2,7 @@
 
 namespace TicketManagement.Application.Features.Events.Queries
 {
-    public class GetEventsExportQuery : IRequest<Response<CsvFile>>
+    public class GetEventsExportQuery : IRequest<CsvFile>
     {
     }
 }
