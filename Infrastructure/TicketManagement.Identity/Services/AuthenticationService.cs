@@ -1,18 +1,16 @@
 ﻿using TicketManagement.Application.Interfaces;
 using TicketManagement.Application.Models;
 using TicketManagement.Identity.Models;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Options;
-using System.Security.Claims;
-using System.Text;
 using System.IdentityModel.Tokens.Jwt;
-using Microsoft.IdentityModel.Tokens;
+using TicketManagement.Identity.Helpers;
 
 namespace TicketManagement.Identity.Services
 {
     public class AuthenticationService: IAuthenticationService
     {
         #region Props/ Vars
+        private readonly RoleManager<IdentityRole> _roleManager;
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly SignInManager<ApplicationUser> _signInManager;
         private readonly JwtSettings _jwtSettings;
@@ -20,11 +18,12 @@ namespace TicketManagement.Identity.Services
 
         #region Ctor
         public AuthenticationService(
-            UserManager<ApplicationUser> userManager, 
+            RoleManager<IdentityRole> roleManager,
+            UserManager<ApplicationUser> userManager,
             SignInManager<ApplicationUser> signInManager,
-            IOptions<JwtSettings> jwtSettings
-            )
+            IOptions<JwtSettings> jwtSettings)
         {
+            _roleManager = roleManager;
             _userManager = userManager;
             _signInManager = signInManager;
             _jwtSettings = jwtSettings.Value;
@@ -51,6 +50,8 @@ namespace TicketManagement.Identity.Services
 
             var result = await _userManager.CreateAsync(user, request.Password);
 
+            await _userManager.AddToRoleAsync(user, Enum.GetName(typeof(IdentityRoles), IdentityRoles.User));  //by default
+
             if (!result.Succeeded)
             {
                 throw new Exception($"{result.ErrorDescription()}");
@@ -73,7 +74,9 @@ namespace TicketManagement.Identity.Services
                 throw new Exception($"Credentials for '{request.Email} aren't valid'.");
             }
 
-            JwtSecurityToken jwtSecurityToken = await GenerateToken(user);
+            var jwtSecurityToken = await JwtHandler.GenerateToken(user, 
+                                        userManager: _userManager, 
+                                        jwtSettings: _jwtSettings);
 
             return new AuthenticationResponse
             {
@@ -81,43 +84,23 @@ namespace TicketManagement.Identity.Services
                 Token = new JwtSecurityTokenHandler().WriteToken(jwtSecurityToken)
             };
         }
-        #endregion
 
-        #region Private actions
-        private async Task<JwtSecurityToken> GenerateToken(ApplicationUser user)
+        public async Task AddRoleAsync(AddRoleRequest request)
         {
-            var userClaims = await _userManager.GetClaimsAsync(user);
+            var rule = Enum.GetName(typeof(IdentityRoles), request.Role);
+            var user = await _userManager.FindByIdAsync(request.UserId);
 
-            var roles = await _userManager.GetRolesAsync(user);
+            if (user is null || !await _roleManager.RoleExistsAsync(rule))
+                throw new Exception("Invalid user ID or Role");
 
-            var roleClaims = new List<Claim>();
+            if (await _userManager.IsInRoleAsync(user, rule))
+                throw new Exception("User already assigned to this role");
 
-            for (int i = 0; i < roles.Count; i++)
-                roleClaims.Add(new Claim("roles", roles[i]));
+            var result = await _userManager.AddToRoleAsync(user, rule);
 
-            var claims = new[]
-            {
-                new Claim(JwtRegisteredClaimNames.Sub, user.UserName),
-                new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
-                new Claim(JwtRegisteredClaimNames.Email, user.Email),
-                new Claim("uid", user.Id)
-            }
-            .Union(userClaims)
-            .Union(roleClaims);
-
-            var symmetricSecurityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_jwtSettings.Key));
-            var signingCredentials = new SigningCredentials(symmetricSecurityKey, SecurityAlgorithms.HmacSha256);
-
-            var jwtSecurityToken = new JwtSecurityToken(
-                issuer: _jwtSettings.Issuer,
-                audience: _jwtSettings.Audience,
-                claims: claims,
-                expires: DateTime.UtcNow.AddMinutes(_jwtSettings.DurationInMinutes),
-                signingCredentials: signingCredentials
-                );
-
-            return jwtSecurityToken;
-        } 
+            if (!result.Succeeded)
+                throw new Exception("Something went wrong");
+        }
         #endregion
     }
 }

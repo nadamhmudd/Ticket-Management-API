@@ -8,7 +8,7 @@ namespace TicketManagement.Api.Controllers
     public class AccountController : ControllerBase
     {
         #region Props / Vars
-        private readonly IAuthenticationService _authenticationService; 
+        private readonly IAuthenticationService _authenticationService;
         #endregion
 
         #region Ctor
@@ -29,6 +29,14 @@ namespace TicketManagement.Api.Controllers
         public async Task<ActionResult<AuthenticationResponse>> AuthenticateAsync(AuthenticationRequest request)
         {
             return Ok(await _authenticationService.AuthenticateAsync(request));
+        }
+
+        [HttpPost("addrole")/*,Authorize(Roles = SD.Role_Admin)*/]
+        public async Task<IActionResult> AddRoleAsync([FromBody] AddRoleRequest request)
+        {
+            await _authenticationService.AddRoleAsync(request);
+
+            return Ok(request);
         }
         #endregion
     }

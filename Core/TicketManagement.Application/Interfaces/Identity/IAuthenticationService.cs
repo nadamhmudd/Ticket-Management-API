@@ -4,5 +4,6 @@
     {
         Task<RegistrationResponse> RegisterAsync(RegistrationRequest request);
         Task<AuthenticationResponse> AuthenticateAsync(AuthenticationRequest request);
+        Task AddRoleAsync(AddRoleRequest request);
     }
 }

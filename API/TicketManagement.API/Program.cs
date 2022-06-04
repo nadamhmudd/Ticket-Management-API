@@ -145,9 +145,9 @@ async void SeedData()
 
         try
         {
-            var userManager = services.GetRequiredService<UserManager<ApplicationUser>>();
+            var dbIdentityInitializer = services.GetRequiredService<IDbIdentityInitializer>();
 
-            await TicketManagement.Identity.Seed.UserCreator.SeedAsync(userManager);
+            await dbIdentityInitializer.Initialize();
 
             Log.Information("Application Starting");
         }

@@ -11,6 +11,7 @@ using System.Text;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Http;
 using Newtonsoft.Json;
+using TicketManagement.Identity.Seed;
 
 namespace TicketManagement.Identity
 {
@@ -18,15 +19,17 @@ namespace TicketManagement.Identity
     {
         public static void AddIdentityServices(this IServiceCollection services, IConfiguration configuration)
         {
-            services.Configure<JwtSettings>(configuration.GetSection("JwtSettings"));
-
             services.AddDbContext<ApplicationIdentityDbContext>(options => options.UseSqlServer(
                 configuration.GetConnectionString("DefaultConnection"),
                 b => b.MigrationsAssembly(typeof(ApplicationIdentityDbContext).Assembly.FullName)));
 
+            #region Add ASP.NET Identity
             services.AddIdentity<ApplicationUser, IdentityRole>()
-                .AddEntityFrameworkStores<ApplicationIdentityDbContext>()
-                .AddDefaultTokenProviders();
+                   .AddEntityFrameworkStores<ApplicationIdentityDbContext>()
+                   .AddDefaultTokenProviders();
+            #endregion
+
+            #region Add Authentication Service
 
             services.AddTransient<IAuthenticationService, AuthenticationService>();
 
@@ -77,6 +80,15 @@ namespace TicketManagement.Identity
                         },
                     };
                 });
+            #endregion
+
+            #region JWT Configuration 
+            services.Configure<JwtSettings>(configuration.GetSection("JwtSettings"));
+            #endregion
+
+            #region Seed Data
+            services.AddScoped<IDbIdentityInitializer, DbIdentityInitializer>(); 
+            #endregion
         }
     }
 }
