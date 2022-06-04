@@ -4,6 +4,6 @@ namespace TicketManagement.Application.Interfaces
 {
     public interface IEmailService
     {
-        Task<bool> SendEmail(Email email);
+        Task SendEmail(Email email);
     }
 }
