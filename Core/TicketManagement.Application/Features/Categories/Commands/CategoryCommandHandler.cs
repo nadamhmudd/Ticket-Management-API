@@ -49,7 +49,6 @@ namespace TicketManagement.Application.Features.Categories.Commands
 
                 throw;
             }
-            
         }
         #endregion
     }

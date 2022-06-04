@@ -17,7 +17,7 @@ var builder = WebApplication.CreateBuilder(args);
 
 #region ConfigureServices : Add services to the container.
 
-#region Add Serilog Logging 
+#region Add Serilog as a logging provider 
 Log.Logger = new LoggerConfiguration()
     .ReadFrom.Configuration(builder.Configuration)
     .WriteTo.File("Logs/log-.txt", rollingInterval: RollingInterval.Day)
