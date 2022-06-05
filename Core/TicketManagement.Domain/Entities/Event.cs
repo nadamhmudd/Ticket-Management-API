@@ -8,7 +8,7 @@
         public string Artist { get; set; }
         public DateTime Date { get; set; }
         public string? Description { get; set; }
-        public string? ImageUrl { get; set; }
+        public string ImageUrl { get; set; }
 
         //one to many relationship
         public Guid CategoryId { get; set; } //FK
