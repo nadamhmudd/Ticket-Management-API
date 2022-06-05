@@ -19,7 +19,7 @@ namespace TicketManagement.Identity.Seed
         
         public async Task Initialize()
         {
-            if (!_roleManager.RoleExistsAsync(Enum.GetName(typeof(IdentityRoles), IdentityRoles.Admin))
+            if (!_roleManager.RoleExistsAsync(SD.Role_Admin)
                              .GetAwaiter().GetResult())
             {
                 await AddRoles.SeedAsync(_roleManager);

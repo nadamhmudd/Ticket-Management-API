@@ -50,7 +50,7 @@ namespace TicketManagement.Identity.Services
 
             var result = await _userManager.CreateAsync(user, request.Password);
 
-            await _userManager.AddToRoleAsync(user, Enum.GetName(typeof(IdentityRoles), IdentityRoles.User));  //by default
+            await _userManager.AddToRoleAsync(user, SD.Role_User);  //by default
 
             if (!result.Succeeded)
             {
