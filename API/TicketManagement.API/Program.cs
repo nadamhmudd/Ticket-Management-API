@@ -3,14 +3,13 @@ global using TicketManagement.Application;
 using TicketManagement.DataPersistence;
 using TicketManagement.Infrastructure;
 using TicketManagement.Identity;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.OpenApi.Models;
 using Serilog;
 using TicketManagement.Api.Utility;
 using TicketManagement.API.Middleware;
-using TicketManagement.Identity.Models;
 using TicketManagement.Application.Interfaces;
 using TicketManagement.Api.Services;
+using System.Text.Json.Serialization;
 #endregion
 
 var builder = WebApplication.CreateBuilder(args);
@@ -36,7 +35,10 @@ builder.Services.AddIdentityServices(builder.Configuration);
 
 builder.Services.AddScoped<ILoggedInUserService, LoggedInUserService>();
 
-builder.Services.AddControllers();
+builder.Services.AddControllers()
+    .AddJsonOptions(options =>
+            options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter())
+            );
 
 builder.Services.AddEndpointsApiExplorer();
 
@@ -62,7 +64,7 @@ builder.Services.AddSwaggerGen(c =>
         Title = "Ticket Management API",
 
     });
-
+    
     #region support JWT
     c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
     {
