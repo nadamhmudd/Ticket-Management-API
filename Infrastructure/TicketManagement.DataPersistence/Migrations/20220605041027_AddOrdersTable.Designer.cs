@@ -12,7 +12,7 @@ using TicketManagement.DataPersistence;
 namespace TicketManagement.DataPersistence.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20220521134754_AddOrdersTable")]
+    [Migration("20220605041027_AddOrdersTable")]
     partial class AddOrdersTable
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -31,7 +31,6 @@ namespace TicketManagement.DataPersistence.Migrations
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("CreatedBy")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<DateTime>("CreatedDate")
@@ -67,7 +66,6 @@ namespace TicketManagement.DataPersistence.Migrations
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("CreatedBy")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<DateTime>("CreatedDate")
@@ -110,11 +108,13 @@ namespace TicketManagement.DataPersistence.Migrations
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("CreatedBy")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<DateTime>("CreatedDate")
                         .HasColumnType("datetime2");
+
+                    b.Property<Guid>("EventId")
+                        .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("LastModifiedBy")
                         .HasColumnType("nvarchar(max)");
@@ -131,10 +131,15 @@ namespace TicketManagement.DataPersistence.Migrations
                     b.Property<double>("OrderTotal")
                         .HasColumnType("float");
 
+                    b.Property<int>("TicktCounts")
+                        .HasColumnType("int");
+
                     b.Property<Guid>("UserId")
                         .HasColumnType("uniqueidentifier");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("EventId");
 
                     b.ToTable("Orders");
                 });
@@ -148,6 +153,17 @@ namespace TicketManagement.DataPersistence.Migrations
                         .IsRequired();
 
                     b.Navigation("Category");
+                });
+
+            modelBuilder.Entity("TicketManagement.Domain.Entities.Order", b =>
+                {
+                    b.HasOne("TicketManagement.Domain.Entities.Event", "Event")
+                        .WithMany()
+                        .HasForeignKey("EventId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Event");
                 });
 
             modelBuilder.Entity("TicketManagement.Domain.Entities.Category", b =>

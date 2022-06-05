@@ -12,8 +12,8 @@ using TicketManagement.DataPersistence;
 namespace TicketManagement.DataPersistence.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20220521135812_CategorySeeding")]
-    partial class CategorySeeding
+    [Migration("20220605041252_SeedEventsAndCategoriesData")]
+    partial class SeedEventsAndCategoriesData
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -125,6 +125,80 @@ namespace TicketManagement.DataPersistence.Migrations
                     b.HasIndex("CategoryId");
 
                     b.ToTable("Events");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = new Guid("ee272f8b-6096-4cb6-8625-bb4bb2d89e8b"),
+                            Artist = "John Egbert",
+                            CategoryId = new Guid("b0788d2f-8003-43c1-92a4-edc76a7c5dde"),
+                            CreatedDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            Date = new DateTime(2022, 12, 5, 6, 12, 52, 421, DateTimeKind.Local).AddTicks(2755),
+                            Description = "Join John for his farwell tour across 15 continents. John really needs no introduction since he has already mesmerized the world with his banjo.",
+                            ImageUrl = "https://gillcleerenpluralsight.blob.core.windows.net/files/GloboTicket/banjo.jpg",
+                            Name = "John Egbert Live",
+                            Price = 65.0
+                        },
+                        new
+                        {
+                            Id = new Guid("3448d5a4-0f72-4dd7-bf15-c14a46b26c00"),
+                            Artist = "Michael Johnson",
+                            CategoryId = new Guid("b0788d2f-8003-43c1-92a4-edc76a7c5dde"),
+                            CreatedDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            Date = new DateTime(2023, 3, 5, 6, 12, 52, 421, DateTimeKind.Local).AddTicks(2791),
+                            Description = "Michael Johnson doesn't need an introduction. His 25 concert across the globe last year were seen by thousands. Can we add you to the list?",
+                            ImageUrl = "https://gillcleerenpluralsight.blob.core.windows.net/files/GloboTicket/michael.jpg",
+                            Name = "The State of Affairs: Michael Live!",
+                            Price = 85.0
+                        },
+                        new
+                        {
+                            Id = new Guid("b419a7ca-3321-4f38-be8e-4d7b6a529319"),
+                            Artist = "DJ 'The Mike'",
+                            CategoryId = new Guid("b0788d2f-8003-43c1-92a4-edc76a7c5dde"),
+                            CreatedDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            Date = new DateTime(2022, 10, 5, 6, 12, 52, 421, DateTimeKind.Local).AddTicks(2809),
+                            Description = "DJs from all over the world will compete in this epic battle for eternal fame.",
+                            ImageUrl = "https://gillcleerenpluralsight.blob.core.windows.net/files/GloboTicket/dj.jpg",
+                            Name = "Clash of the DJs",
+                            Price = 85.0
+                        },
+                        new
+                        {
+                            Id = new Guid("62787623-4c52-43fe-b0c9-b7044fb5929b"),
+                            Artist = "Manuel Santinonisi",
+                            CategoryId = new Guid("b0788d2f-8003-43c1-92a4-edc76a7c5dde"),
+                            CreatedDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            Date = new DateTime(2022, 10, 5, 6, 12, 52, 421, DateTimeKind.Local).AddTicks(2824),
+                            Description = "Get on the hype of Spanish Guitar concerts with Manuel.",
+                            ImageUrl = "https://gillcleerenpluralsight.blob.core.windows.net/files/GloboTicket/guitar.jpg",
+                            Name = "Spanish guitar hits with Manuel",
+                            Price = 25.0
+                        },
+                        new
+                        {
+                            Id = new Guid("1babd057-e980-4cb3-9cd2-7fdd9e525668"),
+                            Artist = "Many",
+                            CategoryId = new Guid("fe98f549-e790-4e9f-aa16-18c2292a2ee9"),
+                            CreatedDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            Date = new DateTime(2023, 4, 5, 6, 12, 52, 421, DateTimeKind.Local).AddTicks(2840),
+                            Description = "The best tech conference in the world",
+                            ImageUrl = "https://gillcleerenpluralsight.blob.core.windows.net/files/GloboTicket/conf.jpg",
+                            Name = "Techorama 2021",
+                            Price = 400.0
+                        },
+                        new
+                        {
+                            Id = new Guid("adc42c09-08c1-4d2c-9f96-2d15bb1af299"),
+                            Artist = "Nick Sailor",
+                            CategoryId = new Guid("6313179f-7837-473a-a4d5-a5571b43e6a6"),
+                            CreatedDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            Date = new DateTime(2023, 2, 5, 6, 12, 52, 421, DateTimeKind.Local).AddTicks(2861),
+                            Description = "The critics are over the moon and so will you after you've watched this sing and dance extravaganza written by Nick Sailor, the man from 'My dad and sister'.",
+                            ImageUrl = "https://gillcleerenpluralsight.blob.core.windows.net/files/GloboTicket/musical.jpg",
+                            Name = "To the Moon and Back",
+                            Price = 135.0
+                        });
                 });
 
             modelBuilder.Entity("TicketManagement.Domain.Entities.Order", b =>
@@ -138,6 +212,9 @@ namespace TicketManagement.DataPersistence.Migrations
 
                     b.Property<DateTime>("CreatedDate")
                         .HasColumnType("datetime2");
+
+                    b.Property<Guid>("EventId")
+                        .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("LastModifiedBy")
                         .HasColumnType("nvarchar(max)");
@@ -154,10 +231,15 @@ namespace TicketManagement.DataPersistence.Migrations
                     b.Property<double>("OrderTotal")
                         .HasColumnType("float");
 
+                    b.Property<int>("TicktCounts")
+                        .HasColumnType("int");
+
                     b.Property<Guid>("UserId")
                         .HasColumnType("uniqueidentifier");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("EventId");
 
                     b.ToTable("Orders");
                 });
@@ -171,6 +253,17 @@ namespace TicketManagement.DataPersistence.Migrations
                         .IsRequired();
 
                     b.Navigation("Category");
+                });
+
+            modelBuilder.Entity("TicketManagement.Domain.Entities.Order", b =>
+                {
+                    b.HasOne("TicketManagement.Domain.Entities.Event", "Event")
+                        .WithMany()
+                        .HasForeignKey("EventId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Event");
                 });
 
             modelBuilder.Entity("TicketManagement.Domain.Entities.Category", b =>
