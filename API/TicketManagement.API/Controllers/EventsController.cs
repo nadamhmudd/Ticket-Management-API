@@ -32,7 +32,7 @@ namespace TicketManagement.API.Controllers
             return Ok(await _mediator.Send(new GetEventDetailQuery(id)));
         }
 
-        [HttpGet("export", Name ="ExportEvents")]
+        [HttpGet("export", Name ="ExportEvents"), Authorize(Roles = SD.Role_Admin)]
         [FileResultContentType("text/csv")]
         public async Task<FileResult> ExportEvents()
         {
@@ -43,19 +43,19 @@ namespace TicketManagement.API.Controllers
         #endregion
 
         #region Commands
-        [HttpPost(Name = "AddEvent")]
+        [HttpPost(Name = "AddEvent"), Authorize(Roles = SD.Role_Admin)]
         public async Task<ActionResult<EventDto>> CreateEvent([FromBody] CreateEventCommand createEventCommand)
         {
             return Ok(await _mediator.Send(createEventCommand));
         }
 
-        [HttpPut(Name = "UpdateEvent")]
+        [HttpPut(Name = "UpdateEvent"), Authorize(Roles = SD.Role_Admin)]
         public async Task<ActionResult<EventDto>> UpdateEvent([FromBody] UpdateEventCommand updateEventCommand)
         {
             return Ok(await _mediator.Send(updateEventCommand));
         }
 
-        [HttpDelete("{id}", Name = "DeleteEvent")]
+        [HttpDelete("{id}", Name = "DeleteEvent"), Authorize(Roles = SD.Role_Admin)]
         public async Task<ActionResult<EventDto>> DeleteEvent(Guid id)
         {
             return Ok(await _mediator.Send(new DeleteEventCommand(id)));

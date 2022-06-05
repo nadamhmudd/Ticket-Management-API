@@ -39,7 +39,7 @@ namespace TicketManagement.API.Controllers
         #endregion
 
         #region Commands
-        [HttpPost(Name = "AddCategory")]
+        [HttpPost(Name = "AddCategory"), Authorize(Roles = SD.Role_Admin)]
         public async Task<ActionResult<CategoryDto>> CreateAsync([FromBody] CreateCategoryCommand createCommand)
         {
             return Ok(await _mediator.Send(createCommand));

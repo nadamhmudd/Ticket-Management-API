@@ -4,6 +4,7 @@ namespace TicketManagement.Api.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [Authorize]
     public class OrderController : ControllerBase
     {
         #region Props /Vars
@@ -19,6 +20,7 @@ namespace TicketManagement.Api.Controllers
 
         #region Actions
         [HttpGet("/getpagedordersformonth", Name = "GetPagedOrdersForMonth")]
+        [Authorize(Roles = SD.Role_Admin)]
         public async Task<ActionResult<PagedOrdersForMonthResponse>> GetPagedOrdersForMonth(DateTime date, int page, int size)
         {
             return Ok(await _mediator.Send(

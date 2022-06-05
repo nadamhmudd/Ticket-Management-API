@@ -1,4 +1,6 @@
-﻿using TicketManagement.Application.Interfaces;
+﻿global using Microsoft.AspNetCore.Authorization;
+global using TicketManagement.Application.Constants;
+using TicketManagement.Application.Interfaces;
 using TicketManagement.Application.Models;
 
 namespace TicketManagement.Api.Controllers
@@ -31,7 +33,7 @@ namespace TicketManagement.Api.Controllers
             return Ok(await _authenticationService.AuthenticateAsync(request));
         }
 
-        [HttpPost("addrole")/*,Authorize(Roles = SD.Role_Admin)*/]
+        [HttpPost("addrole"), Authorize(Roles = SD.Role_Admin)]
         public async Task<IActionResult> AddRoleAsync([FromBody] AddRoleRequest request)
         {
             await _authenticationService.AddRoleAsync(request);
