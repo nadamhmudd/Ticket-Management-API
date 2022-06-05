@@ -49,9 +49,20 @@ namespace TicketManagement.API.Controllers
             return Ok(await _mediator.Send(createEventCommand));
         }
 
-        [HttpPut(Name = "UpdateEvent"), Authorize(Roles = SD.Role_Admin)]
-        public async Task<ActionResult<EventDto>> UpdateEvent([FromBody] UpdateEventCommand updateEventCommand)
+        [HttpPut("{id}", Name = "UpdateEvent"), Authorize(Roles = SD.Role_Admin)]
+        public async Task<ActionResult<EventDto>> UpdateEvent(Guid id, [FromBody] UpdateEventCommand @event)
         {
+            var updateEventCommand = new UpdateEventCommand(id)
+            {
+                ImageUrl = @event.ImageUrl,
+                Name = @event.Name,
+                Price = @event.Price,
+                Artist = @event.Artist,
+                Date = @event.Date,
+                Description = @event.Description,
+                CategoryId = @event.CategoryId,
+            };
+
             return Ok(await _mediator.Send(updateEventCommand));
         }
 
