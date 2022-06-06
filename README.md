@@ -1,10 +1,10 @@
 # Ticket Management API
 API for Manage events, ticket sales etc.
 
-# the Application Architecture
+# Application Architecture
 ### REST API 
 - Built using ASP.NET Core (.net 6)
-- Clean architecture principles 
+- Followed Clean architecture principles 
 - Data access(SQL Server) using EF Core
 ### Class libraries
 - .NET Standard
