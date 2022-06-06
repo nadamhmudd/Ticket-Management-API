@@ -1,4 +1,4 @@
-# Ticket Management API
+# Ticket Management API (https://ticketdotnetapi.azurewebsites.net/swagger/index.html)
 API for Manage events, ticket sales etc.
 
 # Application Architecture
