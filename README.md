@@ -21,4 +21,4 @@ API for Manage events, ticket sales etc.
 ### Sending a Mail using SMTP.
 ### Returning a CSV File.
 ### Exposing the API functionality using Swagger.
-### Generating client code(.NET Core and TypeScript) to use the API using NSwag.
+### Generating client code([.NET Core](https://github.com/nadamhmudd/Ticket-Management-API/blob/master/UI/CSharpServiceClient.cs) and [TypeScript](https://github.com/nadamhmudd/Ticket-Management-API/blob/master/UI/TypeScriptServiceClient.cs)) to use the API using NSwag.
