@@ -43,19 +43,19 @@ namespace TicketManagement.API.Controllers
         #endregion
 
         #region Commands
-        [HttpPost(Name = "AddEvent")/*, Authorize(Roles = SD.Role_Admin)*/]
+        [HttpPost(Name = "AddEvent"), Authorize(Roles = SD.Role_Admin)]
         public async Task<ActionResult<EventDto>> CreateEvent([FromBody] EventCommand @event)
         {
             return Ok(await _mediator.Send(new CreateEventCommand { Event = @event}));
         }
 
-        [HttpPut("{id}", Name = "UpdateEvent")/*, Authorize(Roles = SD.Role_Admin)*/]
+        [HttpPut("{id}", Name = "UpdateEvent"), Authorize(Roles = SD.Role_Admin)]
         public async Task<ActionResult<EventDto>> UpdateEvent(Guid id, [FromBody] EventCommand @event)
         {
             return Ok(await _mediator.Send(new UpdateEventCommand(id){Event = @event}));
         }
 
-        [HttpDelete("{id}", Name = "DeleteEvent"),/* Authorize(Roles = SD.Role_Admin)*/]
+        [HttpDelete("{id}", Name = "DeleteEvent"), Authorize(Roles = SD.Role_Admin)]
         public async Task<ActionResult<EventDto>> DeleteEvent(Guid id)
         {
             return Ok(await _mediator.Send(new DeleteEventCommand(id)));
