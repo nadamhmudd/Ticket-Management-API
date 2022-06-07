@@ -8,8 +8,6 @@
 /* eslint-disable */
 // ReSharper disable InconsistentNaming
 
-export module TicketManagement.App.Services {
-
 export class Client {
     private http: { fetch(url: RequestInfo, init?: RequestInit): Promise<Response> };
     private baseUrl: string;
@@ -23,7 +21,169 @@ export class Client {
     /**
      * @return Success
      */
-    all(): Promise<CategoryDtoListResponse> {
+    getUserInfo(id: string): Promise<UserDto> {
+        let url_ = this.baseUrl + "/api/Account/{id}";
+        if (id === undefined || id === null)
+            throw new Error("The parameter 'id' must be defined.");
+        url_ = url_.replace("{id}", encodeURIComponent("" + id));
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_: RequestInit = {
+            method: "GET",
+            headers: {
+                "Accept": "text/plain"
+            }
+        };
+
+        return this.http.fetch(url_, options_).then((_response: Response) => {
+            return this.processGetUserInfo(_response);
+        });
+    }
+
+    protected processGetUserInfo(response: Response): Promise<UserDto> {
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 200) {
+            return response.text().then((_responseText) => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = UserDto.fromJS(resultData200);
+            return result200;
+            });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<UserDto>(null as any);
+    }
+
+    /**
+     * @param body (optional) 
+     * @return Success
+     */
+    register(body: RegistrationRequest | undefined): Promise<RegistrationResponse> {
+        let url_ = this.baseUrl + "/api/Account/Register";
+        url_ = url_.replace(/[?&]$/, "");
+
+        const content_ = JSON.stringify(body);
+
+        let options_: RequestInit = {
+            body: content_,
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                "Accept": "text/plain"
+            }
+        };
+
+        return this.http.fetch(url_, options_).then((_response: Response) => {
+            return this.processRegister(_response);
+        });
+    }
+
+    protected processRegister(response: Response): Promise<RegistrationResponse> {
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 200) {
+            return response.text().then((_responseText) => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = RegistrationResponse.fromJS(resultData200);
+            return result200;
+            });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<RegistrationResponse>(null as any);
+    }
+
+    /**
+     * @param body (optional) 
+     * @return Success
+     */
+    authenticate(body: AuthenticationRequest | undefined): Promise<AuthenticationResponse> {
+        let url_ = this.baseUrl + "/api/Account/Authenticate";
+        url_ = url_.replace(/[?&]$/, "");
+
+        const content_ = JSON.stringify(body);
+
+        let options_: RequestInit = {
+            body: content_,
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                "Accept": "text/plain"
+            }
+        };
+
+        return this.http.fetch(url_, options_).then((_response: Response) => {
+            return this.processAuthenticate(_response);
+        });
+    }
+
+    protected processAuthenticate(response: Response): Promise<AuthenticationResponse> {
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 200) {
+            return response.text().then((_responseText) => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = AuthenticationResponse.fromJS(resultData200);
+            return result200;
+            });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<AuthenticationResponse>(null as any);
+    }
+
+    /**
+     * @param body (optional) 
+     * @return Success
+     */
+    addrole(body: AddRoleRequest | undefined): Promise<void> {
+        let url_ = this.baseUrl + "/api/Account/addrole";
+        url_ = url_.replace(/[?&]$/, "");
+
+        const content_ = JSON.stringify(body);
+
+        let options_: RequestInit = {
+            body: content_,
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+            }
+        };
+
+        return this.http.fetch(url_, options_).then((_response: Response) => {
+            return this.processAddrole(_response);
+        });
+    }
+
+    protected processAddrole(response: Response): Promise<void> {
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 200) {
+            return response.text().then((_responseText) => {
+            return;
+            });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<void>(null as any);
+    }
+
+    /**
+     * @return Success
+     */
+    getAllCategories(): Promise<CategoryDto[]> {
         let url_ = this.baseUrl + "/api/Categories/all";
         url_ = url_.replace(/[?&]$/, "");
 
@@ -35,18 +195,25 @@ export class Client {
         };
 
         return this.http.fetch(url_, options_).then((_response: Response) => {
-            return this.processAll(_response);
+            return this.processGetAllCategories(_response);
         });
     }
 
-    protected processAll(response: Response): Promise<CategoryDtoListResponse> {
+    protected processGetAllCategories(response: Response): Promise<CategoryDto[]> {
         const status = response.status;
         let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
         if (status === 200) {
             return response.text().then((_responseText) => {
             let result200: any = null;
             let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-            result200 = CategoryDtoListResponse.fromJS(resultData200);
+            if (Array.isArray(resultData200)) {
+                result200 = [] as any;
+                for (let item of resultData200)
+                    result200!.push(CategoryDto.fromJS(item));
+            }
+            else {
+                result200 = <any>null;
+            }
             return result200;
             });
         } else if (status !== 200 && status !== 204) {
@@ -54,14 +221,14 @@ export class Client {
             return throwException("An unexpected server error occurred.", status, _responseText, _headers);
             });
         }
-        return Promise.resolve<CategoryDtoListResponse>(null as any);
+        return Promise.resolve<CategoryDto[]>(null as any);
     }
 
     /**
      * @param includeHistory (optional) 
      * @return Success
      */
-    allwithevents(includeHistory: boolean | undefined): Promise<CategoryEventsDtoListResponse> {
+    getCategoriesWithEvents(includeHistory: boolean | undefined): Promise<CategoryEventsDto[]> {
         let url_ = this.baseUrl + "/api/Categories/allwithevents?";
         if (includeHistory === null)
             throw new Error("The parameter 'includeHistory' cannot be null.");
@@ -77,18 +244,25 @@ export class Client {
         };
 
         return this.http.fetch(url_, options_).then((_response: Response) => {
-            return this.processAllwithevents(_response);
+            return this.processGetCategoriesWithEvents(_response);
         });
     }
 
-    protected processAllwithevents(response: Response): Promise<CategoryEventsDtoListResponse> {
+    protected processGetCategoriesWithEvents(response: Response): Promise<CategoryEventsDto[]> {
         const status = response.status;
         let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
         if (status === 200) {
             return response.text().then((_responseText) => {
             let result200: any = null;
             let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-            result200 = CategoryEventsDtoListResponse.fromJS(resultData200);
+            if (Array.isArray(resultData200)) {
+                result200 = [] as any;
+                for (let item of resultData200)
+                    result200!.push(CategoryEventsDto.fromJS(item));
+            }
+            else {
+                result200 = <any>null;
+            }
             return result200;
             });
         } else if (status !== 200 && status !== 204) {
@@ -96,14 +270,14 @@ export class Client {
             return throwException("An unexpected server error occurred.", status, _responseText, _headers);
             });
         }
-        return Promise.resolve<CategoryEventsDtoListResponse>(null as any);
+        return Promise.resolve<CategoryEventsDto[]>(null as any);
     }
 
     /**
      * @param body (optional) 
      * @return Success
      */
-    categories(body: CreateCategoryCommand | undefined): Promise<CategoryDtoResponse> {
+    addCategory(body: CreateCategoryCommand | undefined): Promise<CategoryDto> {
         let url_ = this.baseUrl + "/api/Categories";
         url_ = url_.replace(/[?&]$/, "");
 
@@ -119,18 +293,18 @@ export class Client {
         };
 
         return this.http.fetch(url_, options_).then((_response: Response) => {
-            return this.processCategories(_response);
+            return this.processAddCategory(_response);
         });
     }
 
-    protected processCategories(response: Response): Promise<CategoryDtoResponse> {
+    protected processAddCategory(response: Response): Promise<CategoryDto> {
         const status = response.status;
         let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
         if (status === 200) {
             return response.text().then((_responseText) => {
             let result200: any = null;
             let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-            result200 = CategoryDtoResponse.fromJS(resultData200);
+            result200 = CategoryDto.fromJS(resultData200);
             return result200;
             });
         } else if (status !== 200 && status !== 204) {
@@ -138,13 +312,13 @@ export class Client {
             return throwException("An unexpected server error occurred.", status, _responseText, _headers);
             });
         }
-        return Promise.resolve<CategoryDtoResponse>(null as any);
+        return Promise.resolve<CategoryDto>(null as any);
     }
 
     /**
      * @return Success
      */
-    eventsGET(): Promise<EventDtoListResponse> {
+    getAllEvents(): Promise<EventDto[]> {
         let url_ = this.baseUrl + "/api/Events";
         url_ = url_.replace(/[?&]$/, "");
 
@@ -156,18 +330,25 @@ export class Client {
         };
 
         return this.http.fetch(url_, options_).then((_response: Response) => {
-            return this.processEventsGET(_response);
+            return this.processGetAllEvents(_response);
         });
     }
 
-    protected processEventsGET(response: Response): Promise<EventDtoListResponse> {
+    protected processGetAllEvents(response: Response): Promise<EventDto[]> {
         const status = response.status;
         let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
         if (status === 200) {
             return response.text().then((_responseText) => {
             let result200: any = null;
             let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-            result200 = EventDtoListResponse.fromJS(resultData200);
+            if (Array.isArray(resultData200)) {
+                result200 = [] as any;
+                for (let item of resultData200)
+                    result200!.push(EventDto.fromJS(item));
+            }
+            else {
+                result200 = <any>null;
+            }
             return result200;
             });
         } else if (status !== 200 && status !== 204) {
@@ -175,14 +356,14 @@ export class Client {
             return throwException("An unexpected server error occurred.", status, _responseText, _headers);
             });
         }
-        return Promise.resolve<EventDtoListResponse>(null as any);
+        return Promise.resolve<EventDto[]>(null as any);
     }
 
     /**
      * @param body (optional) 
      * @return Success
      */
-    eventsPOST(body: CreateEventCommand | undefined): Promise<EventDtoResponse> {
+    addEvent(body: CreateEventCommand | undefined): Promise<EventDto> {
         let url_ = this.baseUrl + "/api/Events";
         url_ = url_.replace(/[?&]$/, "");
 
@@ -198,18 +379,18 @@ export class Client {
         };
 
         return this.http.fetch(url_, options_).then((_response: Response) => {
-            return this.processEventsPOST(_response);
+            return this.processAddEvent(_response);
         });
     }
 
-    protected processEventsPOST(response: Response): Promise<EventDtoResponse> {
+    protected processAddEvent(response: Response): Promise<EventDto> {
         const status = response.status;
         let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
         if (status === 200) {
             return response.text().then((_responseText) => {
             let result200: any = null;
             let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-            result200 = EventDtoResponse.fromJS(resultData200);
+            result200 = EventDto.fromJS(resultData200);
             return result200;
             });
         } else if (status !== 200 && status !== 204) {
@@ -217,14 +398,14 @@ export class Client {
             return throwException("An unexpected server error occurred.", status, _responseText, _headers);
             });
         }
-        return Promise.resolve<EventDtoResponse>(null as any);
+        return Promise.resolve<EventDto>(null as any);
     }
 
     /**
      * @param body (optional) 
-     * @return Error
+     * @return Success
      */
-    eventsPUT(body: UpdateEventCommand | undefined): Promise<ProblemDetails> {
+    updateEvent(body: UpdateEventCommand | undefined): Promise<EventDto> {
         let url_ = this.baseUrl + "/api/Events";
         url_ = url_.replace(/[?&]$/, "");
 
@@ -235,39 +416,37 @@ export class Client {
             method: "PUT",
             headers: {
                 "Content-Type": "application/json",
-                "Accept": "application/json"
+                "Accept": "text/plain"
             }
         };
 
         return this.http.fetch(url_, options_).then((_response: Response) => {
-            return this.processEventsPUT(_response);
+            return this.processUpdateEvent(_response);
         });
     }
 
-    protected processEventsPUT(response: Response): Promise<ProblemDetails> {
+    protected processUpdateEvent(response: Response): Promise<EventDto> {
         const status = response.status;
         let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
-        if (status === 404) {
+        if (status === 200) {
             return response.text().then((_responseText) => {
-            let result404: any = null;
-            let resultData404 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-            result404 = ProblemDetails.fromJS(resultData404);
-            return throwException("Not Found", status, _responseText, _headers, result404);
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = EventDto.fromJS(resultData200);
+            return result200;
             });
-        } else {
+        } else if (status !== 200 && status !== 204) {
             return response.text().then((_responseText) => {
-            let resultdefault: any = null;
-            let resultDatadefault = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-            resultdefault = ProblemDetails.fromJS(resultDatadefault);
-            return resultdefault;
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
             });
         }
+        return Promise.resolve<EventDto>(null as any);
     }
 
     /**
-     * @return Error
+     * @return Success
      */
-    eventsGET2(id: string): Promise<ProblemDetails> {
+    getEventById(id: string): Promise<EventDetailsDto> {
         let url_ = this.baseUrl + "/api/Events/{id}";
         if (id === undefined || id === null)
             throw new Error("The parameter 'id' must be defined.");
@@ -277,39 +456,37 @@ export class Client {
         let options_: RequestInit = {
             method: "GET",
             headers: {
-                "Accept": "application/json"
+                "Accept": "text/plain"
             }
         };
 
         return this.http.fetch(url_, options_).then((_response: Response) => {
-            return this.processEventsGET2(_response);
+            return this.processGetEventById(_response);
         });
     }
 
-    protected processEventsGET2(response: Response): Promise<ProblemDetails> {
+    protected processGetEventById(response: Response): Promise<EventDetailsDto> {
         const status = response.status;
         let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
-        if (status === 404) {
+        if (status === 200) {
             return response.text().then((_responseText) => {
-            let result404: any = null;
-            let resultData404 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-            result404 = ProblemDetails.fromJS(resultData404);
-            return throwException("Not Found", status, _responseText, _headers, result404);
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = EventDetailsDto.fromJS(resultData200);
+            return result200;
             });
-        } else {
+        } else if (status !== 200 && status !== 204) {
             return response.text().then((_responseText) => {
-            let resultdefault: any = null;
-            let resultDatadefault = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-            resultdefault = ProblemDetails.fromJS(resultDatadefault);
-            return resultdefault;
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
             });
         }
+        return Promise.resolve<EventDetailsDto>(null as any);
     }
 
     /**
-     * @return Error
+     * @return Success
      */
-    eventsDELETE(id: string): Promise<ProblemDetails> {
+    deleteEvent(id: string): Promise<EventDto> {
         let url_ = this.baseUrl + "/api/Events/{id}";
         if (id === undefined || id === null)
             throw new Error("The parameter 'id' must be defined.");
@@ -319,67 +496,236 @@ export class Client {
         let options_: RequestInit = {
             method: "DELETE",
             headers: {
-                "Accept": "application/json"
+                "Accept": "text/plain"
             }
         };
 
         return this.http.fetch(url_, options_).then((_response: Response) => {
-            return this.processEventsDELETE(_response);
+            return this.processDeleteEvent(_response);
         });
     }
 
-    protected processEventsDELETE(response: Response): Promise<ProblemDetails> {
-        const status = response.status;
-        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
-        if (status === 404) {
-            return response.text().then((_responseText) => {
-            let result404: any = null;
-            let resultData404 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-            result404 = ProblemDetails.fromJS(resultData404);
-            return throwException("Not Found", status, _responseText, _headers, result404);
-            });
-        } else {
-            return response.text().then((_responseText) => {
-            let resultdefault: any = null;
-            let resultDatadefault = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-            resultdefault = ProblemDetails.fromJS(resultDatadefault);
-            return resultdefault;
-            });
-        }
-    }
-
-    /**
-     * @return Success
-     */
-    export(): Promise<void> {
-        let url_ = this.baseUrl + "/api/Events/export";
-        url_ = url_.replace(/[?&]$/, "");
-
-        let options_: RequestInit = {
-            method: "GET",
-            headers: {
-            }
-        };
-
-        return this.http.fetch(url_, options_).then((_response: Response) => {
-            return this.processExport(_response);
-        });
-    }
-
-    protected processExport(response: Response): Promise<void> {
+    protected processDeleteEvent(response: Response): Promise<EventDto> {
         const status = response.status;
         let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
         if (status === 200) {
             return response.text().then((_responseText) => {
-            return;
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = EventDto.fromJS(resultData200);
+            return result200;
             });
         } else if (status !== 200 && status !== 204) {
             return response.text().then((_responseText) => {
             return throwException("An unexpected server error occurred.", status, _responseText, _headers);
             });
         }
-        return Promise.resolve<void>(null as any);
+        return Promise.resolve<EventDto>(null as any);
     }
+
+    exportEvents(): Promise<FileResponse> {
+        let url_ = this.baseUrl + "/api/Events/export";
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_: RequestInit = {
+            method: "GET",
+            headers: {
+                "Accept": "text/csv"
+            }
+        };
+
+        return this.http.fetch(url_, options_).then((_response: Response) => {
+            return this.processExportEvents(_response);
+        });
+    }
+
+    protected processExportEvents(response: Response): Promise<FileResponse> {
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 200 || status === 206) {
+            const contentDisposition = response.headers ? response.headers.get("content-disposition") : undefined;
+            const fileNameMatch = contentDisposition ? /filename="?([^"]*?)"?(;|$)/g.exec(contentDisposition) : undefined;
+            const fileName = fileNameMatch && fileNameMatch.length > 1 ? fileNameMatch[1] : undefined;
+            return response.blob().then(blob => { return { fileName: fileName, data: blob, status: status, headers: _headers }; });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<FileResponse>(null as any);
+    }
+
+    /**
+     * @param date (optional) 
+     * @param page (optional) 
+     * @param size (optional) 
+     * @return Success
+     */
+    getPagedOrdersForMonth(date: Date | undefined, page: number | undefined, size: number | undefined): Promise<PagedOrdersForMonthResponse> {
+        let url_ = this.baseUrl + "/getpagedordersformonth?";
+        if (date === null)
+            throw new Error("The parameter 'date' cannot be null.");
+        else if (date !== undefined)
+            url_ += "date=" + encodeURIComponent(date ? "" + date.toISOString() : "") + "&";
+        if (page === null)
+            throw new Error("The parameter 'page' cannot be null.");
+        else if (page !== undefined)
+            url_ += "page=" + encodeURIComponent("" + page) + "&";
+        if (size === null)
+            throw new Error("The parameter 'size' cannot be null.");
+        else if (size !== undefined)
+            url_ += "size=" + encodeURIComponent("" + size) + "&";
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_: RequestInit = {
+            method: "GET",
+            headers: {
+                "Accept": "text/plain"
+            }
+        };
+
+        return this.http.fetch(url_, options_).then((_response: Response) => {
+            return this.processGetPagedOrdersForMonth(_response);
+        });
+    }
+
+    protected processGetPagedOrdersForMonth(response: Response): Promise<PagedOrdersForMonthResponse> {
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 200) {
+            return response.text().then((_responseText) => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = PagedOrdersForMonthResponse.fromJS(resultData200);
+            return result200;
+            });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<PagedOrdersForMonthResponse>(null as any);
+    }
+}
+
+export class AddRoleRequest implements IAddRoleRequest {
+    userId!: string;
+    role!: IdentityRoles;
+
+    constructor(data?: IAddRoleRequest) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.userId = _data["userId"];
+            this.role = _data["role"];
+        }
+    }
+
+    static fromJS(data: any): AddRoleRequest {
+        data = typeof data === 'object' ? data : {};
+        let result = new AddRoleRequest();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["userId"] = this.userId;
+        data["role"] = this.role;
+        return data;
+    }
+}
+
+export interface IAddRoleRequest {
+    userId: string;
+    role: IdentityRoles;
+}
+
+export class AuthenticationRequest implements IAuthenticationRequest {
+    email?: string | undefined;
+    password?: string | undefined;
+
+    constructor(data?: IAuthenticationRequest) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.email = _data["email"];
+            this.password = _data["password"];
+        }
+    }
+
+    static fromJS(data: any): AuthenticationRequest {
+        data = typeof data === 'object' ? data : {};
+        let result = new AuthenticationRequest();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["email"] = this.email;
+        data["password"] = this.password;
+        return data;
+    }
+}
+
+export interface IAuthenticationRequest {
+    email?: string | undefined;
+    password?: string | undefined;
+}
+
+export class AuthenticationResponse implements IAuthenticationResponse {
+    id?: string | undefined;
+    token?: string | undefined;
+
+    constructor(data?: IAuthenticationResponse) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.id = _data["id"];
+            this.token = _data["token"];
+        }
+    }
+
+    static fromJS(data: any): AuthenticationResponse {
+        data = typeof data === 'object' ? data : {};
+        let result = new AuthenticationResponse();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["id"] = this.id;
+        data["token"] = this.token;
+        return data;
+    }
+}
+
+export interface IAuthenticationResponse {
+    id?: string | undefined;
+    token?: string | undefined;
 }
 
 export class CategoryDto implements ICategoryDto {
@@ -420,126 +766,6 @@ export class CategoryDto implements ICategoryDto {
 export interface ICategoryDto {
     id?: string;
     name?: string | undefined;
-}
-
-export class CategoryDtoListResponse implements ICategoryDtoListResponse {
-    succeeded?: boolean;
-    message?: string | undefined;
-    validationErrors?: string[] | undefined;
-    data?: CategoryDto[] | undefined;
-
-    constructor(data?: ICategoryDtoListResponse) {
-        if (data) {
-            for (var property in data) {
-                if (data.hasOwnProperty(property))
-                    (<any>this)[property] = (<any>data)[property];
-            }
-        }
-    }
-
-    init(_data?: any) {
-        if (_data) {
-            this.succeeded = _data["succeeded"];
-            this.message = _data["message"];
-            if (Array.isArray(_data["validationErrors"])) {
-                this.validationErrors = [] as any;
-                for (let item of _data["validationErrors"])
-                    this.validationErrors!.push(item);
-            }
-            if (Array.isArray(_data["data"])) {
-                this.data = [] as any;
-                for (let item of _data["data"])
-                    this.data!.push(CategoryDto.fromJS(item));
-            }
-        }
-    }
-
-    static fromJS(data: any): CategoryDtoListResponse {
-        data = typeof data === 'object' ? data : {};
-        let result = new CategoryDtoListResponse();
-        result.init(data);
-        return result;
-    }
-
-    toJSON(data?: any) {
-        data = typeof data === 'object' ? data : {};
-        data["succeeded"] = this.succeeded;
-        data["message"] = this.message;
-        if (Array.isArray(this.validationErrors)) {
-            data["validationErrors"] = [];
-            for (let item of this.validationErrors)
-                data["validationErrors"].push(item);
-        }
-        if (Array.isArray(this.data)) {
-            data["data"] = [];
-            for (let item of this.data)
-                data["data"].push(item.toJSON());
-        }
-        return data;
-    }
-}
-
-export interface ICategoryDtoListResponse {
-    succeeded?: boolean;
-    message?: string | undefined;
-    validationErrors?: string[] | undefined;
-    data?: CategoryDto[] | undefined;
-}
-
-export class CategoryDtoResponse implements ICategoryDtoResponse {
-    succeeded?: boolean;
-    message?: string | undefined;
-    validationErrors?: string[] | undefined;
-    data?: CategoryDto;
-
-    constructor(data?: ICategoryDtoResponse) {
-        if (data) {
-            for (var property in data) {
-                if (data.hasOwnProperty(property))
-                    (<any>this)[property] = (<any>data)[property];
-            }
-        }
-    }
-
-    init(_data?: any) {
-        if (_data) {
-            this.succeeded = _data["succeeded"];
-            this.message = _data["message"];
-            if (Array.isArray(_data["validationErrors"])) {
-                this.validationErrors = [] as any;
-                for (let item of _data["validationErrors"])
-                    this.validationErrors!.push(item);
-            }
-            this.data = _data["data"] ? CategoryDto.fromJS(_data["data"]) : <any>undefined;
-        }
-    }
-
-    static fromJS(data: any): CategoryDtoResponse {
-        data = typeof data === 'object' ? data : {};
-        let result = new CategoryDtoResponse();
-        result.init(data);
-        return result;
-    }
-
-    toJSON(data?: any) {
-        data = typeof data === 'object' ? data : {};
-        data["succeeded"] = this.succeeded;
-        data["message"] = this.message;
-        if (Array.isArray(this.validationErrors)) {
-            data["validationErrors"] = [];
-            for (let item of this.validationErrors)
-                data["validationErrors"].push(item);
-        }
-        data["data"] = this.data ? this.data.toJSON() : <any>undefined;
-        return data;
-    }
-}
-
-export interface ICategoryDtoResponse {
-    succeeded?: boolean;
-    message?: string | undefined;
-    validationErrors?: string[] | undefined;
-    data?: CategoryDto;
 }
 
 export class CategoryEventsDto implements ICategoryEventsDto {
@@ -592,70 +818,6 @@ export interface ICategoryEventsDto {
     id?: string;
     name?: string | undefined;
     events?: EventDto[] | undefined;
-}
-
-export class CategoryEventsDtoListResponse implements ICategoryEventsDtoListResponse {
-    succeeded?: boolean;
-    message?: string | undefined;
-    validationErrors?: string[] | undefined;
-    data?: CategoryEventsDto[] | undefined;
-
-    constructor(data?: ICategoryEventsDtoListResponse) {
-        if (data) {
-            for (var property in data) {
-                if (data.hasOwnProperty(property))
-                    (<any>this)[property] = (<any>data)[property];
-            }
-        }
-    }
-
-    init(_data?: any) {
-        if (_data) {
-            this.succeeded = _data["succeeded"];
-            this.message = _data["message"];
-            if (Array.isArray(_data["validationErrors"])) {
-                this.validationErrors = [] as any;
-                for (let item of _data["validationErrors"])
-                    this.validationErrors!.push(item);
-            }
-            if (Array.isArray(_data["data"])) {
-                this.data = [] as any;
-                for (let item of _data["data"])
-                    this.data!.push(CategoryEventsDto.fromJS(item));
-            }
-        }
-    }
-
-    static fromJS(data: any): CategoryEventsDtoListResponse {
-        data = typeof data === 'object' ? data : {};
-        let result = new CategoryEventsDtoListResponse();
-        result.init(data);
-        return result;
-    }
-
-    toJSON(data?: any) {
-        data = typeof data === 'object' ? data : {};
-        data["succeeded"] = this.succeeded;
-        data["message"] = this.message;
-        if (Array.isArray(this.validationErrors)) {
-            data["validationErrors"] = [];
-            for (let item of this.validationErrors)
-                data["validationErrors"].push(item);
-        }
-        if (Array.isArray(this.data)) {
-            data["data"] = [];
-            for (let item of this.data)
-                data["data"].push(item.toJSON());
-        }
-        return data;
-    }
-}
-
-export interface ICategoryEventsDtoListResponse {
-    succeeded?: boolean;
-    message?: string | undefined;
-    validationErrors?: string[] | undefined;
-    data?: CategoryEventsDto[] | undefined;
 }
 
 export class CreateCategoryCommand implements ICreateCategoryCommand {
@@ -754,6 +916,74 @@ export interface ICreateEventCommand {
     categoryId?: string;
 }
 
+export class EventDetailsDto implements IEventDetailsDto {
+    id?: string;
+    name?: string | undefined;
+    price?: number;
+    artist?: string | undefined;
+    date?: Date;
+    description?: string | undefined;
+    imageUrl?: string | undefined;
+    categoryId?: string;
+    category?: CategoryDto;
+
+    constructor(data?: IEventDetailsDto) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.id = _data["id"];
+            this.name = _data["name"];
+            this.price = _data["price"];
+            this.artist = _data["artist"];
+            this.date = _data["date"] ? new Date(_data["date"].toString()) : <any>undefined;
+            this.description = _data["description"];
+            this.imageUrl = _data["imageUrl"];
+            this.categoryId = _data["categoryId"];
+            this.category = _data["category"] ? CategoryDto.fromJS(_data["category"]) : <any>undefined;
+        }
+    }
+
+    static fromJS(data: any): EventDetailsDto {
+        data = typeof data === 'object' ? data : {};
+        let result = new EventDetailsDto();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["id"] = this.id;
+        data["name"] = this.name;
+        data["price"] = this.price;
+        data["artist"] = this.artist;
+        data["date"] = this.date ? this.date.toISOString() : <any>undefined;
+        data["description"] = this.description;
+        data["imageUrl"] = this.imageUrl;
+        data["categoryId"] = this.categoryId;
+        data["category"] = this.category ? this.category.toJSON() : <any>undefined;
+        return data;
+    }
+}
+
+export interface IEventDetailsDto {
+    id?: string;
+    name?: string | undefined;
+    price?: number;
+    artist?: string | undefined;
+    date?: Date;
+    description?: string | undefined;
+    imageUrl?: string | undefined;
+    categoryId?: string;
+    category?: CategoryDto;
+}
+
 export class EventDto implements IEventDto {
     id?: string;
     name?: string | undefined;
@@ -818,13 +1048,17 @@ export interface IEventDto {
     categoryId?: string;
 }
 
-export class EventDtoListResponse implements IEventDtoListResponse {
-    succeeded?: boolean;
-    message?: string | undefined;
-    validationErrors?: string[] | undefined;
-    data?: EventDto[] | undefined;
+export enum IdentityRoles {
+    Admin = "Admin",
+    User = "User",
+}
 
-    constructor(data?: IEventDtoListResponse) {
+export class OrdersForMonthDto implements IOrdersForMonthDto {
+    id?: string;
+    orderTotal?: number;
+    orderPlaced?: Date;
+
+    constructor(data?: IOrdersForMonthDto) {
         if (data) {
             for (var property in data) {
                 if (data.hasOwnProperty(property))
@@ -835,60 +1069,41 @@ export class EventDtoListResponse implements IEventDtoListResponse {
 
     init(_data?: any) {
         if (_data) {
-            this.succeeded = _data["succeeded"];
-            this.message = _data["message"];
-            if (Array.isArray(_data["validationErrors"])) {
-                this.validationErrors = [] as any;
-                for (let item of _data["validationErrors"])
-                    this.validationErrors!.push(item);
-            }
-            if (Array.isArray(_data["data"])) {
-                this.data = [] as any;
-                for (let item of _data["data"])
-                    this.data!.push(EventDto.fromJS(item));
-            }
+            this.id = _data["id"];
+            this.orderTotal = _data["orderTotal"];
+            this.orderPlaced = _data["orderPlaced"] ? new Date(_data["orderPlaced"].toString()) : <any>undefined;
         }
     }
 
-    static fromJS(data: any): EventDtoListResponse {
+    static fromJS(data: any): OrdersForMonthDto {
         data = typeof data === 'object' ? data : {};
-        let result = new EventDtoListResponse();
+        let result = new OrdersForMonthDto();
         result.init(data);
         return result;
     }
 
     toJSON(data?: any) {
         data = typeof data === 'object' ? data : {};
-        data["succeeded"] = this.succeeded;
-        data["message"] = this.message;
-        if (Array.isArray(this.validationErrors)) {
-            data["validationErrors"] = [];
-            for (let item of this.validationErrors)
-                data["validationErrors"].push(item);
-        }
-        if (Array.isArray(this.data)) {
-            data["data"] = [];
-            for (let item of this.data)
-                data["data"].push(item.toJSON());
-        }
+        data["id"] = this.id;
+        data["orderTotal"] = this.orderTotal;
+        data["orderPlaced"] = this.orderPlaced ? this.orderPlaced.toISOString() : <any>undefined;
         return data;
     }
 }
 
-export interface IEventDtoListResponse {
-    succeeded?: boolean;
-    message?: string | undefined;
-    validationErrors?: string[] | undefined;
-    data?: EventDto[] | undefined;
+export interface IOrdersForMonthDto {
+    id?: string;
+    orderTotal?: number;
+    orderPlaced?: Date;
 }
 
-export class EventDtoResponse implements IEventDtoResponse {
-    succeeded?: boolean;
-    message?: string | undefined;
-    validationErrors?: string[] | undefined;
-    data?: EventDto;
+export class PagedOrdersForMonthResponse implements IPagedOrdersForMonthResponse {
+    count?: number;
+    page?: number;
+    size?: number;
+    ordersForMonth?: OrdersForMonthDto[] | undefined;
 
-    constructor(data?: IEventDtoResponse) {
+    constructor(data?: IPagedOrdersForMonthResponse) {
         if (data) {
             for (var property in data) {
                 if (data.hasOwnProperty(property))
@@ -899,53 +1114,54 @@ export class EventDtoResponse implements IEventDtoResponse {
 
     init(_data?: any) {
         if (_data) {
-            this.succeeded = _data["succeeded"];
-            this.message = _data["message"];
-            if (Array.isArray(_data["validationErrors"])) {
-                this.validationErrors = [] as any;
-                for (let item of _data["validationErrors"])
-                    this.validationErrors!.push(item);
+            this.count = _data["count"];
+            this.page = _data["page"];
+            this.size = _data["size"];
+            if (Array.isArray(_data["ordersForMonth"])) {
+                this.ordersForMonth = [] as any;
+                for (let item of _data["ordersForMonth"])
+                    this.ordersForMonth!.push(OrdersForMonthDto.fromJS(item));
             }
-            this.data = _data["data"] ? EventDto.fromJS(_data["data"]) : <any>undefined;
         }
     }
 
-    static fromJS(data: any): EventDtoResponse {
+    static fromJS(data: any): PagedOrdersForMonthResponse {
         data = typeof data === 'object' ? data : {};
-        let result = new EventDtoResponse();
+        let result = new PagedOrdersForMonthResponse();
         result.init(data);
         return result;
     }
 
     toJSON(data?: any) {
         data = typeof data === 'object' ? data : {};
-        data["succeeded"] = this.succeeded;
-        data["message"] = this.message;
-        if (Array.isArray(this.validationErrors)) {
-            data["validationErrors"] = [];
-            for (let item of this.validationErrors)
-                data["validationErrors"].push(item);
+        data["count"] = this.count;
+        data["page"] = this.page;
+        data["size"] = this.size;
+        if (Array.isArray(this.ordersForMonth)) {
+            data["ordersForMonth"] = [];
+            for (let item of this.ordersForMonth)
+                data["ordersForMonth"].push(item.toJSON());
         }
-        data["data"] = this.data ? this.data.toJSON() : <any>undefined;
         return data;
     }
 }
 
-export interface IEventDtoResponse {
-    succeeded?: boolean;
-    message?: string | undefined;
-    validationErrors?: string[] | undefined;
-    data?: EventDto;
+export interface IPagedOrdersForMonthResponse {
+    count?: number;
+    page?: number;
+    size?: number;
+    ordersForMonth?: OrdersForMonthDto[] | undefined;
 }
 
-export class ProblemDetails implements IProblemDetails {
-    type?: string | undefined;
-    title?: string | undefined;
-    status?: number | undefined;
-    detail?: string | undefined;
-    instance?: string | undefined;
+export class RegistrationRequest implements IRegistrationRequest {
+    firstName!: string;
+    lastName!: string;
+    email!: string;
+    userName!: string;
+    password!: string;
+    phoneNumber!: string;
 
-    constructor(data?: IProblemDetails) {
+    constructor(data?: IRegistrationRequest) {
         if (data) {
             for (var property in data) {
                 if (data.hasOwnProperty(property))
@@ -956,38 +1172,81 @@ export class ProblemDetails implements IProblemDetails {
 
     init(_data?: any) {
         if (_data) {
-            this.type = _data["type"];
-            this.title = _data["title"];
-            this.status = _data["status"];
-            this.detail = _data["detail"];
-            this.instance = _data["instance"];
+            this.firstName = _data["firstName"];
+            this.lastName = _data["lastName"];
+            this.email = _data["email"];
+            this.userName = _data["userName"];
+            this.password = _data["password"];
+            this.phoneNumber = _data["phoneNumber"];
         }
     }
 
-    static fromJS(data: any): ProblemDetails {
+    static fromJS(data: any): RegistrationRequest {
         data = typeof data === 'object' ? data : {};
-        let result = new ProblemDetails();
+        let result = new RegistrationRequest();
         result.init(data);
         return result;
     }
 
     toJSON(data?: any) {
         data = typeof data === 'object' ? data : {};
-        data["type"] = this.type;
-        data["title"] = this.title;
-        data["status"] = this.status;
-        data["detail"] = this.detail;
-        data["instance"] = this.instance;
+        data["firstName"] = this.firstName;
+        data["lastName"] = this.lastName;
+        data["email"] = this.email;
+        data["userName"] = this.userName;
+        data["password"] = this.password;
+        data["phoneNumber"] = this.phoneNumber;
         return data;
     }
 }
 
-export interface IProblemDetails {
-    type?: string | undefined;
-    title?: string | undefined;
-    status?: number | undefined;
-    detail?: string | undefined;
-    instance?: string | undefined;
+export interface IRegistrationRequest {
+    firstName: string;
+    lastName: string;
+    email: string;
+    userName: string;
+    password: string;
+    phoneNumber: string;
+}
+
+export class RegistrationResponse implements IRegistrationResponse {
+    userId?: string | undefined;
+    token?: string | undefined;
+
+    constructor(data?: IRegistrationResponse) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.userId = _data["userId"];
+            this.token = _data["token"];
+        }
+    }
+
+    static fromJS(data: any): RegistrationResponse {
+        data = typeof data === 'object' ? data : {};
+        let result = new RegistrationResponse();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["userId"] = this.userId;
+        data["token"] = this.token;
+        return data;
+    }
+}
+
+export interface IRegistrationResponse {
+    userId?: string | undefined;
+    token?: string | undefined;
 }
 
 export class UpdateEventCommand implements IUpdateEventCommand {
@@ -1054,6 +1313,69 @@ export interface IUpdateEventCommand {
     categoryId?: string;
 }
 
+export class UserDto implements IUserDto {
+    id?: string | undefined;
+    userName?: string | undefined;
+    firstName?: string | undefined;
+    lastName?: string | undefined;
+    email?: string | undefined;
+    phoneNumber?: string | undefined;
+
+    constructor(data?: IUserDto) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.id = _data["id"];
+            this.userName = _data["userName"];
+            this.firstName = _data["firstName"];
+            this.lastName = _data["lastName"];
+            this.email = _data["email"];
+            this.phoneNumber = _data["phoneNumber"];
+        }
+    }
+
+    static fromJS(data: any): UserDto {
+        data = typeof data === 'object' ? data : {};
+        let result = new UserDto();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["id"] = this.id;
+        data["userName"] = this.userName;
+        data["firstName"] = this.firstName;
+        data["lastName"] = this.lastName;
+        data["email"] = this.email;
+        data["phoneNumber"] = this.phoneNumber;
+        return data;
+    }
+}
+
+export interface IUserDto {
+    id?: string | undefined;
+    userName?: string | undefined;
+    firstName?: string | undefined;
+    lastName?: string | undefined;
+    email?: string | undefined;
+    phoneNumber?: string | undefined;
+}
+
+export interface FileResponse {
+    data: Blob;
+    status: number;
+    fileName?: string;
+    headers?: { [name: string]: any };
+}
+
 export class ApiException extends Error {
     message: string;
     status: number;
@@ -1083,6 +1405,4 @@ function throwException(message: string, status: number, response: string, heade
         throw result;
     else
         throw new ApiException(message, status, response, headers, null);
-}
-
 }
