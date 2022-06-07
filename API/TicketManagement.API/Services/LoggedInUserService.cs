@@ -1,15 +1,17 @@
 ﻿using System.Security.Claims;
 using TicketManagement.Application.Interfaces;
+using TicketManagement.Application.Models;
 
 namespace TicketManagement.Api.Services
 {
     public class LoggedInUserService : ILoggedInUserService
     {
-        public LoggedInUserService(IHttpContextAccessor httpContextAccessor)
+        public LoggedInUserService(IHttpContextAccessor httpContextAccessor, IAuthenticationService authService)
         {
-            UserId = httpContextAccessor.HttpContext?.User?.FindFirstValue(ClaimTypes.NameIdentifier);
+           var userId = httpContextAccessor.HttpContext?.User?.FindFirstValue(ClaimTypes.NameIdentifier);
+            User   = authService.GetUserAsync(userId).Result;
         }
 
-        public string UserId { get; }
+        public UserDto User { get; }
     }
 }

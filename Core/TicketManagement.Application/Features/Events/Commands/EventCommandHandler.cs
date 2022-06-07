@@ -13,16 +13,18 @@ namespace TicketManagement.Application.Features.Events.Commands
         private readonly IAsyncRepository<Category> _categoryRepo; 
         private readonly IEmailService _emailService;
         private readonly ILogger<EventCommandHandler> _logger;
+        private readonly ILoggedInUserService _loggedInUser;
         #endregion
 
         #region Constructor(s)
-        public EventCommandHandler(IMapper mapper, IEventRepository eventRepo, ILogger<EventCommandHandler> logger, IEmailService emailService, IAsyncRepository<Category> categoryRepo)
+        public EventCommandHandler(IMapper mapper, IEventRepository eventRepo, ILogger<EventCommandHandler> logger, IEmailService emailService, IAsyncRepository<Category> categoryRepo, ILoggedInUserService loggedInUser)
         {
             _mapper = mapper;
             _eventRepo = eventRepo;
             _logger = logger;
             _emailService = emailService;
             _categoryRepo = categoryRepo;
+            _loggedInUser = loggedInUser;
         }
         #endregion
 
@@ -30,9 +32,9 @@ namespace TicketManagement.Application.Features.Events.Commands
         public async Task<EventDto> Handle(CreateEventCommand request, CancellationToken cancellationToken)
         {
             #region Validation
-            var validator = new EventCommandValidator(_eventRepo, _categoryRepo);
+            var validator = new CreateEventCommandValidator(_eventRepo, _categoryRepo);
 
-            var validationResult = await validator.ValidateAsync(request.Event);
+            var validationResult = await validator.ValidateAsync(request);
 
             if (validationResult.Errors.Any())
             {
@@ -49,7 +51,7 @@ namespace TicketManagement.Application.Features.Events.Commands
             {
                 await _emailService.SendEmail(new Email()
                 {
-                    To = "nada.mhmudd@gmail.com",
+                    To = _loggedInUser.User.Email,
                     Body = $"A new event was created: {request}",
                     Subject = "A new event was created"
                 });
@@ -76,10 +78,9 @@ namespace TicketManagement.Application.Features.Events.Commands
                     throw new Exceptions.NotFoundException(nameof(Event), request.Id);
 
                 #region Validation
-                //var validator = new UpdateEventCommandValidator();
-                var validator = new EventCommandValidator(_eventRepo, _categoryRepo);
+                var validator = new UpdateEventCommandValidator(_eventRepo, _categoryRepo);
 
-                var validationResult = await validator.ValidateAsync(request.Event);
+                var validationResult = await validator.ValidateAsync(request);
 
                 if (validationResult.Errors.Any())
                     throw new Exceptions.ValidationException(validationResult);

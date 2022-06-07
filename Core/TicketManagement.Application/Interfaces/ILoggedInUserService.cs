@@ -2,6 +2,6 @@
 {
     public interface ILoggedInUserService
     {
-        public string UserId { get; }
+        public UserDto User { get; }
     }
 }

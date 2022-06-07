@@ -3,7 +3,7 @@ using TicketManagement.Domain.Entities;
 
 namespace TicketManagement.Application.Features.Events.Commands
 {
-    public class EventCommandValidator : AbstractValidator<EventCommand>
+    public class CreateEventCommandValidator : AbstractValidator<CreateEventCommand>
     {
         #region Props / Vars
         private readonly IEventRepository _eventRepo;
@@ -11,7 +11,7 @@ namespace TicketManagement.Application.Features.Events.Commands
         #endregion
 
         #region Constructor(s)
-        public EventCommandValidator(IEventRepository eventRepo, IAsyncRepository<Category> categpryRepo)
+        public CreateEventCommandValidator(IEventRepository eventRepo, IAsyncRepository<Category> categpryRepo)
         {
             _eventRepo = eventRepo;
             _categpryRepo = categpryRepo;
@@ -27,6 +27,16 @@ namespace TicketManagement.Application.Features.Events.Commands
                 .NotEmpty().WithMessage("{PropertyName} is required.")
                 .MaximumLength(50).WithMessage("{PropertyName} must not exceed 50 characters.")
                 ;
+            
+            RuleFor(e => e.Artist)
+                .NotNull()
+                .NotEmpty().WithMessage("{PropertyName} is required.")
+                ;
+            
+            RuleFor(e => e.ImageUrl)
+                .NotNull()
+                .NotEmpty().WithMessage("{PropertyName} is required.")
+                ;
 
             RuleFor(e => e.Price)
                 .NotEmpty().WithMessage("{PropertyName} is required.")
@@ -35,7 +45,6 @@ namespace TicketManagement.Application.Features.Events.Commands
 
             RuleFor(e => e.Date)
                 .NotEmpty().WithMessage("{PropertyName} is required.")
-                .NotNull()
                 .GreaterThan(DateTime.Now)
                 ;
 
@@ -52,11 +61,12 @@ namespace TicketManagement.Application.Features.Events.Commands
         #endregion
 
         #region Custom Validation Rules
-        private async Task<bool> EventNameAndDateUnique(EventCommand e, CancellationToken token)
+        private async Task<bool> EventNameAndDateUnique(CreateEventCommand e, CancellationToken token)
         {
-            return !(await _eventRepo.IsEventNameAndDateUnique(e.Name, e.Date));
+            var matches = await _eventRepo.GetEventNameAndDate(e.Name, e.Date);
+            return matches is null ? true : false;
         }
-        private async Task<bool> CategoryIdIsValid(EventCommand e, CancellationToken token)
+        private async Task<bool> CategoryIdIsValid(CreateEventCommand e, CancellationToken token)
         {
             return (await _categpryRepo.GetByIdAsync(e.CategoryId) != null);
         }

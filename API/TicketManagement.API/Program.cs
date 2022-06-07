@@ -62,6 +62,9 @@ builder.Services.AddSwaggerGen(c =>
     {
         Version = "v1",
         Title = "Ticket Management API",
+        Description = "For Test Admin Functionalities:" +
+        "\r\n\r\n\t\"email\":\"Admin@test.com\",\r\r\n\t\"password\":\"Admin123*\"" +
+        "\r\n\r\tPlease signup with valid email to recive new mail if want to create new event(feature availbale only for admins)",
 
     });
     
@@ -108,15 +111,11 @@ builder.Services.AddSwaggerGen(c =>
 var app = builder.Build();
 
 #region Configure: Configure the HTTP request pipeline (Middleware pipline)
-if (app.Environment.IsDevelopment())
+app.UseSwagger();
+app.UseSwaggerUI(c =>
 {
-    //app.UseDeveloperExceptionPage();
-    app.UseSwagger();
-    app.UseSwaggerUI(c =>
-    {
-        c.SwaggerEndpoint("/swagger/v1/swagger.json", "Ticket Management API");
-    });
-}
+    c.SwaggerEndpoint("/swagger/v1/swagger.json", "Ticket Management API");
+});
 
 app.UseHttpsRedirection();
 

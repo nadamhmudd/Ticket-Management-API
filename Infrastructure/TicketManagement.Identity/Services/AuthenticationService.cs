@@ -31,6 +31,24 @@ namespace TicketManagement.Identity.Services
         #endregion
 
         #region Actions
+        public async Task<UserDto> GetUserAsync(string id)
+        {
+            var user = await _userManager.FindByIdAsync(id);
+
+            if(user is null)
+                throw new Application.Exceptions.NotFoundException(nameof(ApplicationUser), id);
+
+            return new UserDto
+            {
+                Id =user.Id,
+                FirstName = user.FirstName,
+                LastName = user.LastName,
+                Email = user.Email,
+                UserName = user.UserName,
+                PhoneNumber = user.PhoneNumber,
+            };
+        }
+
         public async Task<RegistrationResponse> RegisterAsync(RegistrationRequest request)
         {
             if (await _userManager.FindByNameAsync(request.UserName) is not null)
@@ -57,7 +75,15 @@ namespace TicketManagement.Identity.Services
                 throw new Exception($"{result.ErrorDescription()}");
             }
 
-            return new RegistrationResponse() { UserId = user.Id };
+            var jwtSecurityToken = await JwtHandler.GenerateToken(user,
+                                       userManager: _userManager,
+                                       jwtSettings: _jwtSettings);
+
+            return new RegistrationResponse
+            {
+                UserId = user.Id,
+                Token = new JwtSecurityTokenHandler().WriteToken(jwtSecurityToken)
+            };
         }
 
         public async Task<AuthenticationResponse> AuthenticateAsync(AuthenticationRequest request)

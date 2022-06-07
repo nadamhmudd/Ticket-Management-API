@@ -21,6 +21,12 @@ namespace TicketManagement.Api.Controllers
         #endregion
 
         #region Actions
+        [HttpGet("{id}", Name="GetUserInfo"), Authorize()]
+        public async Task<ActionResult<UserDto>> GetUserAsync(string id)
+        {
+            return Ok(await _authenticationService.GetUserAsync(id));
+        }
+
         [HttpPost("Register")]
         public async Task<ActionResult<RegistrationResponse>> RegisterAsync(RegistrationRequest request)
         {
