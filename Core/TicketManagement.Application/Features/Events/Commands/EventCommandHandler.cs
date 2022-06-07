@@ -10,17 +10,19 @@ namespace TicketManagement.Application.Features.Events.Commands
         #region Props / Vars
         private readonly IMapper _mapper;
         private readonly IEventRepository _eventRepo; 
+        private readonly IAsyncRepository<Category> _categoryRepo; 
         private readonly IEmailService _emailService;
         private readonly ILogger<EventCommandHandler> _logger;
         #endregion
 
         #region Constructor(s)
-        public EventCommandHandler(IMapper mapper, IEventRepository eventRepo, ILogger<EventCommandHandler> logger, IEmailService emailService)
+        public EventCommandHandler(IMapper mapper, IEventRepository eventRepo, ILogger<EventCommandHandler> logger, IEmailService emailService, IAsyncRepository<Category> categoryRepo)
         {
             _mapper = mapper;
             _eventRepo = eventRepo;
             _logger = logger;
             _emailService = emailService;
+            _categoryRepo = categoryRepo;
         }
         #endregion
 
@@ -28,9 +30,9 @@ namespace TicketManagement.Application.Features.Events.Commands
         public async Task<EventDto> Handle(CreateEventCommand request, CancellationToken cancellationToken)
         {
             #region Validation
-            var validator = new CreateEventCommandValidator(_eventRepo);
+            var validator = new EventCommandValidator(_eventRepo, _categoryRepo);
 
-            var validationResult = await validator.ValidateAsync(request);
+            var validationResult = await validator.ValidateAsync(request.Event);
 
             if (validationResult.Errors.Any())
             {
@@ -74,9 +76,10 @@ namespace TicketManagement.Application.Features.Events.Commands
                     throw new Exceptions.NotFoundException(nameof(Event), request.Id);
 
                 #region Validation
-                var validator = new UpdateEventCommandValidator();
+                //var validator = new UpdateEventCommandValidator();
+                var validator = new EventCommandValidator(_eventRepo, _categoryRepo);
 
-                var validationResult = await validator.ValidateAsync(request);
+                var validationResult = await validator.ValidateAsync(request.Event);
 
                 if (validationResult.Errors.Any())
                     throw new Exceptions.ValidationException(validationResult);
