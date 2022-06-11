@@ -64,7 +64,7 @@ builder.Services.AddSwaggerGen(c =>
         Title = "Ticket Management API",
         Description = "For Test Admin Functionalities:" +
         "\r\n\r\n\t\"email\":\"Admin@test.com\",\r\r\n\t\"password\":\"Admin123*\"" +
-        "\r\n\r\tPlease signup with valid email to recive new mail if want to create new event(feature availbale only for admins)",
+        "\r\n\r\tPlease signup with valid email to recieve new mail after create new event(feature availbale only for admins)",
 
     });
     
